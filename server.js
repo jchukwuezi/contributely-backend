@@ -7,6 +7,16 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const bodyParser =  require('body-parser');
+const dotenv = require('dotenv')
+const Organisation = require('./models/Organisation')
+const connectDB = require('./config/db')
+
+
+
+//load config
+dotenv.config({path: './config/config.env'})
+
+connectDB()
 
 const app = express();
 
@@ -35,6 +45,21 @@ app.post('/login', (req, res) => {
 //post request register
 app.post('/register', (req, res) => {
     console.log(req.body);
+    //look for someone with the same email, will get an error or document as callback func
+    Organisation.findOne({orgEmail: req.body.orgEmail}, async (err, doc) => {
+        if (err) throw err;
+        if (doc) res.send("Organisation already exists");
+        if (!doc){ //if there's no doc
+            const newOrg = new Organisation({
+                name: req.body.orgName,
+                email: req.body.orgEmail,
+                password: req.body.orgPassword
+            });
+            await newOrg.save();
+            res.send("Organisation created")
+        }
+    })
+
 })
 
 //get request login
