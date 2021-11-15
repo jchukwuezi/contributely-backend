@@ -2,7 +2,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
-const OrganisationSchema = new.mongoose.Schema({
+const OrganisationSchema = new mongoose.Schema({
     id:{
         type: mongoose.Types.ObjectId
     },
