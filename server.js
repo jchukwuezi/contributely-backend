@@ -129,12 +129,12 @@ app.post("/login", (req, res) => {
     //checking for existing user
     Organisation.findOne({email}).then((org) =>{
         console.log(org);
-        if (!org) return res.status(400).send("User does not exist");
+        if (!org) res.status(400).send("User does not exist");
         bcrypt.compare(password, org.password).then((result) => {
-            if (!result) return res.status(400).send("Invalid credentials")
+            if (!result) res.status(400).send("Invalid credentials")
 
             const sessOrg = {
-                id: org.id,
+                id: org._id,
                 name: org.name,
                 email: org.email
             };
