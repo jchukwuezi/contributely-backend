@@ -42,3 +42,5 @@ DonorSchema.pre('save', async function(next){
     this.password = await bcrypt.hash(this.password, salt)
     next(); //middleware function to save to DB
 })
+
+module.exports = mongoose.model('Donor', DonorSchema)

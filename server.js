@@ -14,6 +14,10 @@ const connectDB = require('./config/db')
 const genuuid = require('uuid');
 const {v4: uuid4} = require('uuid');
 const MAX_AGE = 1000 * 60 * 60 * 3; //three hours
+const Donor = require('./models/Donor')
+
+//declaring donor route
+const Donors = require('./routes/api/donors')
 
 
 
@@ -39,6 +43,7 @@ app.use(cors({
     origin: 'http://localhost:3000', //location of the react app being connected to
     credentials: true
 }))
+
 /*
 app.use(session({
     secret: 'secretcode',
@@ -94,8 +99,7 @@ app.post('/login', (req, res, next) => {
 })
 */
 
-//log in functionality 
-app.post('/')
+
 
 //post request register
 app.post('/register', (req, res) => {
@@ -115,6 +119,31 @@ app.post('/register', (req, res) => {
         }
     })
 
+})
+
+//register- donor
+app.post("/register-donor", (req, res) => {
+    console.log(req.body);
+
+    //looking for donor that already has that email
+    Donor.findOne({email: req.body.donorEmail}, async(err, doc) => {
+        if (err) throw err;
+        if (doc) res.send("Donor already exists")
+        if(!doc){
+            const newDonor = new Donor({
+                name: req.body.donorName,
+                email: req.body.donorEmail,
+                password: req.body.donorPassword
+            });
+            await newDonor.save();
+            res.send("Donor created")
+        }
+    })
+})
+
+//login-donor
+app.post("/login-donor", (req, res) => {
+    
 })
 
 //login functionality
@@ -177,6 +206,8 @@ app.get('/org', (req, res) => {
     console.log(req.body);
     res.send(req.org); //stores user that has been authenticated inside of it
 })
+
+app.use("/api/donors", Donors);
 
 app.listen(4000, ()=>{
     console.log('Server has started')
