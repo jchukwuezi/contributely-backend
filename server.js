@@ -51,6 +51,25 @@ app.use(session({
     saveUninitialized: true
 }));
 */
+
+const sessionHandler = session({
+    genid: function(req){
+        console.log('session id created');
+        return uuid4();
+    },
+    secret: process.env.SESS_SECRET,
+    resave: true,
+    saveUninitialized: false,
+    store: mongoDBstore,
+    cookie : {
+        maxAge: MAX_AGE,
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none'
+    }
+})
+
+/*
 app.use(
     session({
          genid: function(req){
@@ -69,6 +88,8 @@ app.use(
          }
     })
 );
+*/
+app.use(sessionHandler);
 app.use(cookieParser("secretcode"))
 //app.use(passport.initialize());
 //app.use(passport.session());
@@ -207,7 +228,7 @@ app.get('/org', (req, res) => {
     res.send(req.org); //stores user that has been authenticated inside of it
 })
 
-app.use("/api/donors", Donors);
+app.use("/api/donors", sessionHandler, Donors);
 
 app.listen(4000, ()=>{
     console.log('Server has started')

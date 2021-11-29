@@ -43,15 +43,22 @@ router.post("/login", (req, res) => {
                 name: donor.name,
                 email: donor.email
             }
-
+            
             req.session.donor = sessDonor;
-            res.status(200).send("Logged in Successfully")
+            //saving session data in the different routes
+            req.session.save();
+            //res.status(200).send("Logged in Successfully")
             console.log(sessDonor)
             console.log(sessDonor.id)
+            console.log(req.session.donor);
         })        
     })
 
 })
+
+//sending name to 
+
+//checking if donor is authenticated 
 
 //this line is needed to access this api route from the app.js folder
 module.exports = router;
