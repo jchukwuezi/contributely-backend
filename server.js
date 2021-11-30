@@ -19,6 +19,9 @@ const Donor = require('./models/Donor')
 //declaring donor route
 const Donors = require('./routes/api/donors')
 
+//declaring organisation route
+const Organisations = require('./routes/api/organisations')
+
 
 
 
@@ -36,21 +39,13 @@ const mongoDBstore = new MongoDBStore({
   collection: "mySessions"  
 })
 
-//Middleware 
+//------------------------------------------MIDDLEWARE---------------------------------------
 app.use(express.json())
 app.use(express.urlencoded({extended: false})) 
 app.use(cors({
     origin: 'http://localhost:3000', //location of the react app being connected to
     credentials: true
 }))
-
-/*
-app.use(session({
-    secret: 'secretcode',
-    resave: true,
-    saveUninitialized: true
-}));
-*/
 
 const sessionHandler = session({
     genid: function(req){
@@ -69,31 +64,12 @@ const sessionHandler = session({
     }
 })
 
-/*
-app.use(
-    session({
-         genid: function(req){
-             console.log('session id created');
-             return uuid4();
-         },
-         secret: process.env.SESS_SECRET,
-         resave: true,
-         saveUninitialized: false,
-         store: mongoDBstore,
-         cookie : {
-             maxAge: MAX_AGE,
-             secure: true,
-             httpOnly: true,
-             sameSite: 'none'
-         }
-    })
-);
-*/
 app.use(sessionHandler);
 app.use(cookieParser("secretcode"))
-//app.use(passport.initialize());
-//app.use(passport.session());
-//require('./config/passportConfig')(passport);
+//app.use(passport.initialize())
+//app.use(passport.session)
+//require("./config/passport-config/organisation-config")(passport)
+//require("./config/passport-config/donor-config")(passport)
 
 
 
@@ -229,6 +205,7 @@ app.get('/org', (req, res) => {
 })
 
 app.use("/api/donors", sessionHandler, Donors);
+app.use("/api/organisations", sessionHandler, Organisations);
 
 app.listen(4000, ()=>{
     console.log('Server has started')

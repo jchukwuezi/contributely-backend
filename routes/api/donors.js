@@ -56,7 +56,35 @@ router.post("/login", (req, res) => {
 
 })
 
-//sending name to 
+//getting a specific donor
+router.get("/donor", (req, res) => {
+    //checking if they are authenticated first
+
+    const sessDonor = req.session.donor;
+    if(!sessDonor){
+        res.status(400).send("There is no user in this session, please log in");
+    }
+    
+
+    const email =  sessDonor.email;
+    Donor.findOne({email}).then((donor) => {
+        if (!donor)  res.status(400).send("There is no user in this session, please log in");
+        res.send(donor);
+    })
+})
+
+//getting the donor name in the session
+router.get("/donor/name", (req, res) => {
+    /*
+    const sessDonor = req.session.donor;
+    if(!sessDonor){
+        res.status(400).send("There is no user in this session, please log in");
+    }
+    const name = sessDonor.name;
+    res.send(name);
+    */
+   res.send(req.session.donor);
+})
 
 //checking if donor is authenticated 
 
