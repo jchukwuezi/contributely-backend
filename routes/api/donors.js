@@ -1,92 +1,105 @@
 const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
+
 
 //putting donor in an api folder to isolate it
 
 //CRUD Functionality
 router.post("/register", (req, res) => {
-    console.log(res.body)
-    Donor.findOne({email: req.body.donorEmail}, async(err, doc) => {
-        if (err) throw err;
-        if (doc) res.send("Donor already exists")
-        if(!doc){
+    const {name, email, password} = req.body;
+    console.log('Register is being attempted')
+    console.log(req.body)
+
+    if(!name || !email || !password){
+        return res.status(400).send('Please enter all fields');
+    }
+
+    Donor.findOne({email: email}).then((donor) => {
+        if (donor){
+            console.log("a dupilcate has been found, hopefully the client sees this error")
+           return res.status(400).send({error: 'Donor already exists'})
+        } 
+
+        else{
             const newDonor = new Donor({
-                name: req.body.donorName,
-                email: req.body.donorEmail,
-                password: req.body.donorPassword
+                name,
+                email,
+                password
             });
-            await newDonor.save();
-            res.send("Donor created")
+    
+            //hashing the password
+            bcrypt.genSalt((err, salt) => 
+                bcrypt.hash(newDonor.password, salt, (err, hash) => {
+                    if(err) throw err;
+                    newDonor.password = hash;
+                    //save new donor
+                    newDonor.save()
+                    .then(() => {
+                        res.status(200).send({successful: 'Sucessfully registered'})
+                    })
+                    .catch((err) => console.log(err));
+                })
+            );
         }
     })
 })
 
 router.post("/login", (req, res) => {
     const {email, password} = req.body;
-    console.log(req.body);
-    //making sure fields are entered //will put this error on the client side afterwards
+    console.log('Login is being attempted')
     if(!email || !password){
-        return res.status(400).send("Please enter all fields");
+        return res.status(400).send('Please enter all fields')
     }
 
-    Donor.findOne({email}).then((donor) => {
-        console.log(donor);
-        if(!donor) res.status(400).send("User does not exist")
-        bcrypt.compare(password, donor.password).then((result) => {
-            if(!result) res.status(400).send("Invalid credentials")
-            
-            //saving a Donor into the sessions collection
+    Donor.findOne({ email }).then((donor) => {
+        if(!donor) return res.status(400).send('Donor does not exist')
+
+        bcrypt.compare(password, donor.password).then((isMatch) => {
+            if(!isMatch) return res.status(400).send('Invalid credentials')
             const sessDonor = {
                 id: donor._id,
                 name: donor.name,
                 email: donor.email
             }
-            
+
             req.session.donor = sessDonor;
-            //saving session data in the different routes
-            req.session.save();
-            //res.status(200).send("Logged in Successfully")
+            console.log('Details of sessDonor')
             console.log(sessDonor)
-            console.log(sessDonor.id)
-            console.log(req.session.donor);
-        })        
-    })
 
-})
+            console.log('--------------------------------------')
 
-//getting a specific donor
-router.get("/donor", (req, res) => {
-    //checking if they are authenticated first
+            console.log('Details of req.session.donor')
+            console.log(req.session.donor)
+            req.session.save();
 
-    const sessDonor = req.session.donor;
-    if(!sessDonor){
-        res.status(400).send("There is no user in this session, please log in");
-    }
-    
+            console.log('Details of the entire session')
+            console.log(req.session)
 
-    const email =  sessDonor.email;
-    Donor.findOne({email}).then((donor) => {
-        if (!donor)  res.status(400).send("There is no user in this session, please log in");
-        res.send(donor);
+            res.status(200).send(`${sessDonor.name} has successfully logged in to the application`)
+            console.log('Donor has been found')
+        })
+
     })
 })
 
-//getting the donor name in the session
-router.get("/donor/name", (req, res) => {
-    /*
+//to check if donor is authenticated
+router.get("/auth/donor", (req, res) => {
+    console.log('Someone is trying to authenticate users')
+    console.log('Sessions details')
+    console.log(req.session)
+    console.log(req.session.donor)
     const sessDonor = req.session.donor;
-    if(!sessDonor){
-        res.status(400).send("There is no user in this session, please log in");
+    if(sessDonor){
+        console.log('User was successfully authenticated')
+        res.send(sessDonor)
+    } else{
+        console.log("No user was found. This is funny because it works on post man")
+        res.status(401).send('Unauthorized')
     }
-    const name = sessDonor.name;
-    res.send(name);
-    */
-   res.send(req.session.donor);
 })
 
-//checking if donor is authenticated 
 
 //this line is needed to access this api route from the app.js folder
 module.exports = router;
