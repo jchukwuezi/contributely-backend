@@ -89,6 +89,7 @@ router.get("/auth/donor", (req, res) => {
     console.log('Someone is trying to authenticate users')
     console.log('Sessions details')
     console.log(req.session)
+    console.log('Donor details stored in the session')
     console.log(req.session.donor)
     const sessDonor = req.session.donor;
     if(sessDonor){
@@ -98,6 +99,44 @@ router.get("/auth/donor", (req, res) => {
         console.log("No user was found. This is funny because it works on post man")
         res.status(401).send('Unauthorized')
     }
+})
+
+
+//CRUD Functionality for adding tags 
+router.post("/add-tags", (req, res) => {
+    const sessDonor = req.session.donor;
+    const tagsInput = req.body.tags
+    console.log(tagsInput);
+
+    if(sessDonor){
+        console.log('User found, will attempt to add tags to this users account')
+
+        //finding the current donor's details in the database and adding the tags
+        Donor.findOne({_id:req.session.donor.id}).then(async (donor) => {
+            if(!donor){
+                console.log("No user was found. This is funny because it works on post man")
+                res.status(401).send('Unauthorized')
+            }
+
+            else{
+                //using find one and update
+                await donor.update({
+                    $push: {
+                        interests: {
+                            $each : tagsInput
+                        }
+                    }
+                })
+            }
+        })
+        //I want to add them in a way that doesn't add any duplicates
+
+    }
+    else{
+        console.log("No user was found. This is funny because it works on post man")
+        res.status(401).send('Unauthorized')
+    }
+
 })
 
 
