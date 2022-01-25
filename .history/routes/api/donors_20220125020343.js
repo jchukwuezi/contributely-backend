@@ -103,13 +103,13 @@ router.get("/auth/donor", (req, res) => {
 
 
 //CRUD Functionality for adding tags 
-router.post("/add-interests", (req, res) => {
+router.post("/add-tags", (req, res) => {
     const sessDonor = req.session.donor;
     const tagsInput = req.body.tags
     console.log(tagsInput);
 
     if(sessDonor){
-        console.log('User found in session, will attempt to add tags to this users account')
+        console.log('User found, will attempt to add tags to this users account')
 
         //finding the current donor's details in the database and adding the tags
         Donor.findOne({_id:req.session.donor.id}).then(async (donor) => {
@@ -135,28 +135,7 @@ router.post("/add-interests", (req, res) => {
         console.log("No user was found. This is funny because it works on post man")
         res.status(401).send('Unauthorized')
     }
-})
 
-router.get("/get-interests", (req, res) => {
-    const sessDonor = req.session.donor;
-
-    if(sessDonor){
-        console.log("User found in session, will attempt to get their tags/interests")
-        Donor.findOne({_id:req.session.donor.id}).then((donor) => {
-            if(!donor){
-                console.log("No user was found. This is funny because it works on post man")
-                res.status(401).send('Unauthorized')
-            }
-            else{
-                //add code to find tags
-            }
-        })
-    }
-
-    else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
-    }
 })
 
 
