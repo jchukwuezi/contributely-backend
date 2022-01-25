@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
+const {getThemeURL, getCauses, causeList} = require('../../services/globalgiving')
+
 
 //putting donor in an api folder to isolate it
 
@@ -178,8 +180,7 @@ router.get("/get-causes", (req, res) => {
                 //interests.interests will remove the interest title from the response
                 //res.send(interests.interests)
                 const url = getThemeURL(interests.interests[0])
-                console.log(url)
-                //await getCauses(url)
+                getCauses(url)
                 console.log(causeList)
                 console.log(interests.interests)
             }

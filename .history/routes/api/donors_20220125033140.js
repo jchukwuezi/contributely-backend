@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
+const {getThemeURL, getCauses, causeList} = require('../../services/globalgiving');
+
 
 //putting donor in an api folder to isolate it
 

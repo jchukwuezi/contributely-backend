@@ -1,5 +1,6 @@
 const fetch = require("node-fetch")
 const xml2js = require("xml2js")
+const dotenv = require("dotenv")
 const causeList = []
 
 const getThemeURL = (theme) => {
@@ -51,9 +52,4 @@ const getCauses = async (url) => {
         causeList = [project1Obj, project2Obj, project3Obj]
     })
 
-    module.exports ={
-        getThemeURL,
-        getCauses,
-        causeList
-    }
 }

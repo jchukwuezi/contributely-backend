@@ -52,8 +52,8 @@ const getCauses = async (url) => {
     })
 
     module.exports ={
-        getThemeURL,
-        getCauses,
-        causeList
+        causeList: causeList,
+        getThemeURL: getThemeURL,
+        getCauses: getCauses
     }
 }
