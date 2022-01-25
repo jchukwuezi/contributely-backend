@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
-const {getThemeURL, getCauses, causeList} = require('../../services/globalgiving')
 
 
 //putting donor in an api folder to isolate it
@@ -140,7 +139,7 @@ router.post("/add-interests", (req, res) => {
 
 router.get("/get-interests", (req, res) => {
     const sessDonor = req.session.donor;
-
+    
     if(sessDonor){
         console.log("User found in session, will attempt to get their tags/interests")
         Donor.findOne({_id:req.session.donor.id}).then(async(donor) => {
