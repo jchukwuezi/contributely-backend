@@ -45,7 +45,7 @@ const getCauses = async (url) => {
             summary: project3["summary"]
         }
 
-        causeList.push(project1Obj, project2Obj, project3Obj)
+        causeList = [project1Obj, project2Obj, project3Obj]
     })
     .catch((err) => {
         console.error(err)

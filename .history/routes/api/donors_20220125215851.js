@@ -180,7 +180,7 @@ router.get("/get-causes", (req, res) => {
                 const url = getThemeUrl(interests.interests[0])
                 console.log(url)
                 await getCauses(url)
-               //console.log(causeList)
+                console.log(causeList)
                 res.send(causeList)
                 console.log(interests.interests)
             }

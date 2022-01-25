@@ -1,6 +1,6 @@
 //this file will be used to get information from the just giving api to get information of different fundraisers
 const xml2js = require('xml2js')
-const fetch = require('node-fetch')
+const nodefetch = require('node-fetch')
 const API_KEY = process.env.GG_API_KEY;
 const causeList = []
 
@@ -45,7 +45,7 @@ const getCauses = async (url) => {
             summary: project3["summary"]
         }
 
-        causeList.push(project1Obj, project2Obj, project3Obj)
+        causeList = [project1Obj, project2Obj, project3Obj]
     })
     .catch((err) => {
         console.error(err)
@@ -56,6 +56,5 @@ const getCauses = async (url) => {
 
 module.exports = {
     getThemeUrl: getThemeUrl,
-    getCauses: getCauses,
-    causeList
+    getCauses: getCauses
 }
