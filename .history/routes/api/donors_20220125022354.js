@@ -142,17 +142,15 @@ router.get("/get-interests", (req, res) => {
 
     if(sessDonor){
         console.log("User found in session, will attempt to get their tags/interests")
-        Donor.findOne({_id:req.session.donor.id}).then(async(donor) => {
+        Donor.findOne({_id:req.session.donor.id}).then((donor) => {
             if(!donor){
                 console.log("No user was found. This is funny because it works on post man")
                 res.status(401).send('Unauthorized')
             }
             else{
                 //add code to find interests
-                const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
-                //interests.interests will remove the interest title from the response
-                res.send(interests.interests)
-                console.log(interests.interests)
+                const interests = await Donor.findById(req.session.donor.id).select("interests")
+                console.log(interests)
             }
         })
     }

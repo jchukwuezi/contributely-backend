@@ -150,8 +150,7 @@ router.get("/get-interests", (req, res) => {
             else{
                 //add code to find interests
                 const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
-                //interests.interests will remove the interest title from the response
-                res.send(interests.interests)
+                res.send(interests)
                 console.log(interests.interests)
             }
         })
