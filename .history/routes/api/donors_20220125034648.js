@@ -2,8 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
-const {getThemeUrl} = require('../../services/globalgiving')
-
+const globalgiving = require('../../services/globalgiving')
 //putting donor in an api folder to isolate it
 
 //CRUD Functionality
@@ -139,6 +138,7 @@ router.post("/add-interests", (req, res) => {
 
 router.get("/get-interests", (req, res) => {
     const sessDonor = req.session.donor;
+
     if(sessDonor){
         console.log("User found in session, will attempt to get their tags/interests")
         Donor.findOne({_id:req.session.donor.id}).then(async(donor) => {
@@ -177,10 +177,10 @@ router.get("/get-causes", (req, res) => {
                 const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
                 //interests.interests will remove the interest title from the response
                 //res.send(interests.interests)
-                const url = getThemeUrl(interests.interests[0])
+                const url = globalgiving.getThemeURL(interests.interests[0])
                 console.log(url)
                 //await getCauses(url)
-                //console.log(causeList)
+                console.log(globalgiving.causeList)
                 console.log(interests.interests)
             }
         })

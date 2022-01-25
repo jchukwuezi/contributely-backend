@@ -177,8 +177,8 @@ router.get("/get-causes", (req, res) => {
                 const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
                 //interests.interests will remove the interest title from the response
                 //res.send(interests.interests)
-                const url = getThemeUrl(interests.interests[0])
-                console.log(url)
+                //const url = getThemeURL(interests.interests[0])
+                //console.log(url)
                 //await getCauses(url)
                 //console.log(causeList)
                 console.log(interests.interests)

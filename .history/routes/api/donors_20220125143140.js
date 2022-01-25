@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
-const {getThemeUrl} = require('../../services/globalgiving')
+//const {getThemeURL, getCauses, causeList} = require('../../services/globalgiving');
+const globalGiving = require('../../services/globalgiving')
 
 //putting donor in an api folder to isolate it
 
@@ -177,8 +178,8 @@ router.get("/get-causes", (req, res) => {
                 const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
                 //interests.interests will remove the interest title from the response
                 //res.send(interests.interests)
-                const url = getThemeUrl(interests.interests[0])
-                console.log(url)
+                //const url = getThemeURL(interests.interests[0])
+                console.log(globalGiving.getThemeURL)
                 //await getCauses(url)
                 //console.log(causeList)
                 console.log(interests.interests)

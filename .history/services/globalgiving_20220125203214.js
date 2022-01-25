@@ -7,9 +7,3 @@ const API_KEY = process.env.GG_API_KEY;
 const getThemeUrl = (theme) => {
     return 'https://api.globalgiving.org/api/public/projectservice/themes/' + theme +  '/projects/summary?api_key=' + process.env.GG_API_KEY;
 } 
-
-
-
-module.exports = {
-    getThemeUrl: getThemeUrl
-}

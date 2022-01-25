@@ -5,11 +5,8 @@ const API_KEY = process.env.GG_API_KEY;
 
 //function to create the url that a get request will be sent to for a specific theme
 const getThemeUrl = (theme) => {
-    return 'https://api.globalgiving.org/api/public/projectservice/themes/' + theme +  '/projects/summary?api_key=' + process.env.GG_API_KEY;
+    return 'https://api.globalgiving.org/api/public/projectservice/themes/' + theme + API_KEY;
 } 
 
-
-
-module.exports = {
-    getThemeUrl: getThemeUrl
-}
+const url = getThemeUrl('climate')
+console.log('url created : ' + url)
