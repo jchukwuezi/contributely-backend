@@ -68,7 +68,7 @@ const getCausesByCountry = async (url) => {
     const data = await causeResponse.text()
 
     parser.parseStringPromise(data)
-    .then((res)=>{
+    .then(()=>{
         const project1 = res["projects"]["project"][0]
         const project2 = res["projects"]["project"][1]
         const project3 = res["projects"]["project"][2]
@@ -97,8 +97,10 @@ const getCausesByCountry = async (url) => {
         causeListCountry.push(project1Obj, project2Obj, project3Obj)
     })
     .catch((err)=> {
-        console.error(err)
+
     })
+
+
 }
 
 

@@ -12,16 +12,6 @@ const DonorSchema = new mongoose.Schema({
         required: true
     },
 
-    country:{
-        type:String,
-        required: true
-    },
-
-    countryCode:{ 
-        type: String,
-        required: true
-    },
-
     password:{
         type: String,
         required: true

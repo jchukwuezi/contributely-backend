@@ -2,17 +2,17 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
-const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterest, getCausesByCountry} = require('../../services/globalgiving')
+const {getThemeUrl, causeList, getCauses} = require('../../services/globalgiving')
 
-//putting donor in an api folder to isolate its
+//putting donor in an api folder to isolate it
 
 //CRUD Functionality
 router.post("/register", (req, res) => {
-    const {name, email, password, country, countryCode} = req.body;
+    const {name, email, password} = req.body;
     console.log('Register is being attempted')
     console.log(req.body)
 
-    if(!name || !email || !password || !country){
+    if(!name || !email || !password){
         return res.status(400).send('Please enter all fields');
     }
 
@@ -26,9 +26,7 @@ router.post("/register", (req, res) => {
             const newDonor = new Donor({
                 name,
                 email,
-                password,
-                country,
-                countryCode
+                password
             });
     
             //hashing the password
@@ -164,7 +162,7 @@ router.get("/get-interests", (req, res) => {
     }
 })
 
-router.get("/get-causes/interest", (req, res) => {
+router.get("/get-causes", (req, res) => {
     const sessDonor = req.session.donor;
 
     if(sessDonor){
@@ -187,9 +185,9 @@ router.get("/get-causes/interest", (req, res) => {
                 else{
                     const url = getThemeUrl(interests.interests[0])
                     console.log(url)
-                    await getCausesByInterest(url)
+                    await getCauses(url)
                    //console.log(causeList)
-                    res.send(causeListInterest)
+                    res.send(causeList)
                     console.log(interests.interests)
                 }
 
@@ -210,41 +208,6 @@ router.get("/get-causes/interest", (req, res) => {
         res.status(401).send('Unauthorized')
     }
 })
-
-router.get("/get/country-code", async (req, res) => {
-    const sessDonor = req.session.donor;
-
-    if(sessDonor){
-        //finding the current user's country
-        const countryCode = await Donor.findById(req.session.donor.id).select({_id:0, countryCode:1})
-        res.send(countryCode)
-    }
-
-    else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.get("/get-causes/country", async (req, res) => {
-    const sessDonor = req.session.donor;
-
-    if(sessDonor){
-        //finding the current user's country
-        const countryCode = await Donor.findById(req.session.donor.id).select({_id:0, countryCode:1})
-        const url = getCountryUrl(countryCode.countryCode)
-        console.log(url)
-        await getCausesByCountry(url)
-        res.send(causeListCountry)
-    }
-    else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
-    }
-
-
-})
-
 
 
 //this line is needed to access this api route from the app.js folder

@@ -2,9 +2,9 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
-const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterest, getCausesByCountry} = require('../../services/globalgiving')
+const {getThemeUrl, causeListCountry, causeListInterest, getCauses} = require('../../services/globalgiving')
 
-//putting donor in an api folder to isolate its
+//putting donor in an api folder to isolate it
 
 //CRUD Functionality
 router.post("/register", (req, res) => {
@@ -187,7 +187,7 @@ router.get("/get-causes/interest", (req, res) => {
                 else{
                     const url = getThemeUrl(interests.interests[0])
                     console.log(url)
-                    await getCausesByInterest(url)
+                    await getCauses(url)
                    //console.log(causeList)
                     res.send(causeListInterest)
                     console.log(interests.interests)
@@ -211,31 +211,11 @@ router.get("/get-causes/interest", (req, res) => {
     }
 })
 
-router.get("/get/country-code", async (req, res) => {
+router.get("/get-causes/country", (req, res) => {
     const sessDonor = req.session.donor;
 
     if(sessDonor){
-        //finding the current user's country
-        const countryCode = await Donor.findById(req.session.donor.id).select({_id:0, countryCode:1})
-        res.send(countryCode)
-    }
 
-    else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.get("/get-causes/country", async (req, res) => {
-    const sessDonor = req.session.donor;
-
-    if(sessDonor){
-        //finding the current user's country
-        const countryCode = await Donor.findById(req.session.donor.id).select({_id:0, countryCode:1})
-        const url = getCountryUrl(countryCode.countryCode)
-        console.log(url)
-        await getCausesByCountry(url)
-        res.send(causeListCountry)
     }
     else{
         console.log("No user was found. This is funny because it works on post man")
