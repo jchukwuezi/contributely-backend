@@ -26,11 +26,9 @@ const DonorSchema = new mongoose.Schema({
         default: Date.now
     },
 
-    interests: [{
-        type: String
-    }]
+    interests: [
 
-    
+    ]
 })
 
 

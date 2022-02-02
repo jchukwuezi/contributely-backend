@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 
 //to register an organisation
 router.post("/register", (req, res) => {
-    const {name, email, description, password} = req.body;
+    const {name, email, password} = req.body;
     console.log('Register is being attempted')
     console.log(req.body)
 
@@ -24,7 +24,6 @@ router.post("/register", (req, res) => {
             const newOrg = new Organisation({
                 name,
                 email,
-                description,
                 password
             });
 

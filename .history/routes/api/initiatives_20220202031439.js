@@ -49,7 +49,7 @@ router.get("/get", async (req, res) => {
 
     if (sessOrg){
         const foundInitiatives = await Organisation.findOne({_id:req.session.org.id}).populate("initiativeList")
-        res.json(foundInitiatives.initiativeList)
+        res.json(foundInitiatives)
     }
 
     else{

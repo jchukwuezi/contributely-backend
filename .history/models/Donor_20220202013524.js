@@ -29,8 +29,6 @@ const DonorSchema = new mongoose.Schema({
     interests: [{
         type: String
     }]
-
-    
 })
 
 

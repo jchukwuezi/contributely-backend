@@ -44,12 +44,12 @@ router.post("/add", (req, res) => {
     }
 })
 
-router.get("/get", async (req, res) => {
+router.get("/initiatives", async (req, res) => {
     const sessOrg = req.session.org;
 
     if (sessOrg){
         const foundInitiatives = await Organisation.findOne({_id:req.session.org.id}).populate("initiativeList")
-        res.json(foundInitiatives.initiativeList)
+        res.json(foundInitiatives)
     }
 
     else{

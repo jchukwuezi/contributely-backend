@@ -6,7 +6,7 @@ const Organisation = require('../../models/Organisation')
 
 router.post("/add", (req, res) => {
     const sessOrg = req.session.org;
-    const {title, description, goalAmount, status, tags} = req.body
+    const {title, description, goalAmount, tags} = req.body
 
     if(sessOrg){
         console.log('Sessions details')
@@ -24,7 +24,6 @@ router.post("/add", (req, res) => {
                     organisation:org._id,
                     description: description,
                     goalAmount: goalAmount,
-                    status: status,
                     tags: tags
                 })
 
@@ -44,12 +43,12 @@ router.post("/add", (req, res) => {
     }
 })
 
-router.get("/get", async (req, res) => {
+router.get("/initiatives", (req, res) => {
     const sessOrg = req.session.org;
 
     if (sessOrg){
-        const foundInitiatives = await Organisation.findOne({_id:req.session.org.id}).populate("initiativeList")
-        res.json(foundInitiatives.initiativeList)
+        const foundInitiatives = await Organisation.findOne({_id:req.session.org.id})
+        res.json(foundInitiatives)
     }
 
     else{
@@ -58,35 +57,6 @@ router.get("/get", async (req, res) => {
     }
 })
 
-router.get("/initiatives/:title", (req, res) => {
-    const sessOrg = req.session.org;
+router.get("/initiatives/:initiativeId", (req, res) => {
 
-    if (sessOrg){
-        Initiative.findOne({title: req.params.title})
-        .populate('initiativeList')
-        .exec( (err, initiative) => {
-            if(!err){
-                res.send(initiative)
-            }
-
-            else{
-                //checking the type of error
-                if(err.kind === 'ObjectId'){
-                    return res.status(404).send({
-                        message: "Initiatives not found with given title " + req.params.title
-                    }); 
-                }
-
-                return res.status(500).send({
-                    message: "Error retrieving Initiatives with title " + req.params.title
-                }); 
-            }
-        })
-    }
-
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
 })
-module.exports = router;

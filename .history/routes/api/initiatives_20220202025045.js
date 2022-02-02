@@ -6,7 +6,7 @@ const Organisation = require('../../models/Organisation')
 
 router.post("/add", (req, res) => {
     const sessOrg = req.session.org;
-    const {title, description, goalAmount, status, tags} = req.body
+    const {title, description, goalAmount, tags} = req.body
 
     if(sessOrg){
         console.log('Sessions details')
@@ -24,7 +24,6 @@ router.post("/add", (req, res) => {
                     organisation:org._id,
                     description: description,
                     goalAmount: goalAmount,
-                    status: status,
                     tags: tags
                 })
 
@@ -44,12 +43,12 @@ router.post("/add", (req, res) => {
     }
 })
 
-router.get("/get", async (req, res) => {
+router.get("/initiatives", (req, res) => {
     const sessOrg = req.session.org;
 
     if (sessOrg){
         const foundInitiatives = await Organisation.findOne({_id:req.session.org.id}).populate("initiativeList")
-        res.json(foundInitiatives.initiativeList)
+        res.json(foundInitiatives)
     }
 
     else{
