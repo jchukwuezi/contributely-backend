@@ -23,18 +23,13 @@ const InitiativeSchema = new mongoose.Schema({
         default: 0
     },
 
-    tags: [{
+    tags: {
         type: String
-    }],
+    },
 
     creationDate:{
         type: Date,
         default: Date.now
-    },
-
-    status: {
-        type: String,
-        required: true
     },
 
     endedAt:{
@@ -42,5 +37,3 @@ const InitiativeSchema = new mongoose.Schema({
     }
 
 })
-
-module.exports = mongoose.model('Initiative', InitiativeSchema)

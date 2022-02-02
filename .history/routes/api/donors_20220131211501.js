@@ -179,26 +179,13 @@ router.get("/get-causes", (req, res) => {
                 //res.send(interests.interests)
                 if(interests.interests.length === 0){
                     res.send([])
-                    console.log("no interests found for this user")
                 }
-
-                else{
-                    const url = getThemeUrl(interests.interests[0])
-                    console.log(url)
-                    await getCauses(url)
-                   //console.log(causeList)
-                    res.send(causeList)
-                    console.log(interests.interests)
-                }
-
-                /*
                 const url = getThemeUrl(interests.interests[0])
                 console.log(url)
                 await getCauses(url)
                //console.log(causeList)
                 res.send(causeList)
                 console.log(interests.interests)
-                */
             }
         })
     }

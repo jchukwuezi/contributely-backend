@@ -14,8 +14,6 @@ const MAX_AGE = 1000 * 60 * 60 * 3; //three hours
 const Donors = require('./routes/api/donors')
 //declaring organisation route
 const Organisations = require('./routes/api/organisations')
-//declaring initiative route
-const Initiatives = require('./routes/api/initiatives')
 
 //load config
 dotenv.config({path: './config/config.env'})
@@ -55,7 +53,6 @@ app.use(session({
 
 app.use("/api/donors", Donors);
 app.use("/api/organisations", Organisations);
-app.use("/api/initiatives", Initiatives);
 
 app.listen(4000, ()=>{
     console.log('Server has started')

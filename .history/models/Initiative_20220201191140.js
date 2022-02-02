@@ -6,12 +6,6 @@ const InitiativeSchema = new mongoose.Schema({
         required: true
     },
 
-    //referencing the organisaiton that created the initiative
-    organisation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organisation'
-    },
-
     description:{
         type: String,
         required: true
@@ -23,18 +17,9 @@ const InitiativeSchema = new mongoose.Schema({
         default: 0
     },
 
-    tags: [{
-        type: String
-    }],
-
     creationDate:{
         type: Date,
         default: Date.now
-    },
-
-    status: {
-        type: String,
-        required: true
     },
 
     endedAt:{
@@ -42,5 +27,3 @@ const InitiativeSchema = new mongoose.Schema({
     }
 
 })
-
-module.exports = mongoose.model('Initiative', InitiativeSchema)

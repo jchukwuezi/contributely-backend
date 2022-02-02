@@ -27,23 +27,12 @@ const OrganisationSchema = new mongoose.Schema({
     },
 
 
-    tags: [{
-            type: String
-        }
+    tags: [
+
     ],
 
     memberList: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Donor'
-        }
-    ],
 
-    initiativeList: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Initiative'
-        }
     ]
 
 })

@@ -37,13 +37,6 @@ const OrganisationSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Donor'
         }
-    ],
-
-    initiativeList: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Initiative'
-        }
     ]
 
 })
