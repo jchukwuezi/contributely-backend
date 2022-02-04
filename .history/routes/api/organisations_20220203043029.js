@@ -104,14 +104,6 @@ router.get("/auth/org", (req, res) => {
     }
 })
 
-//for logging out
-router.delete("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if(err) throw err;
-        res.clearCookie("session-id");
-        res.send("Logged out successfully")
-    })
-})
 
 
 

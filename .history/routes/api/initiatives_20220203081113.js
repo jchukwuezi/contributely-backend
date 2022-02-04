@@ -8,7 +8,6 @@ router.post("/add", (req, res) => {
     const sessOrg = req.session.org;
     console.log(req.session)
     console.log(req.body)
-    console.log(req.session.org)
     const {title, description, goalAmount, tags} = req.body
 
     if(sessOrg){

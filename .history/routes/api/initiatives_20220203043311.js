@@ -6,10 +6,7 @@ const Organisation = require('../../models/Organisation')
 
 router.post("/add", (req, res) => {
     const sessOrg = req.session.org;
-    console.log(req.session)
-    console.log(req.body)
-    console.log(req.session.org)
-    const {title, description, goalAmount, tags} = req.body
+    const {title, description, goalAmount, status, tags} = req.body
 
     if(sessOrg){
         console.log('Sessions details')
@@ -27,6 +24,7 @@ router.post("/add", (req, res) => {
                     organisation:org._id,
                     description: description,
                     goalAmount: goalAmount,
+                    status: status,
                     tags: tags
                 })
 

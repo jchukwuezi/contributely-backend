@@ -23,14 +23,9 @@ const InitiativeSchema = new mongoose.Schema({
         default: 0
     },
 
-    totalAmountDonated:{
-        type: Number,
-        default: 0
-    },
-
-    tags: [
-
-    ],
+    tags: [{
+        type: String
+    }],
 
     creationDate:{
         type: Date,
@@ -44,15 +39,7 @@ const InitiativeSchema = new mongoose.Schema({
 
     endedAt:{
         type: Date,
-    },
-
-    donationHistory: [
-        {
-            amount: Number,
-            email: String,
-            date: Date
-        }
-    ]
+    }
 
 })
 

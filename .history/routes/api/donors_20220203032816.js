@@ -105,9 +105,8 @@ router.get("/auth/donor", (req, res) => {
 
 
 //CRUD Functionality for adding tags 
-router.post("/add-interests", (req, res) => {
+router.put("/add-interests", (req, res) => {
     const sessDonor = req.session.donor;
-    console.log(req.body);
     const tagsInput = req.body.tags
     console.log(tagsInput);
 
@@ -126,10 +125,12 @@ router.post("/add-interests", (req, res) => {
                 //add to set will insure no duplicates
                 await donor.update({
                     $addToSet: {
-                        interests: /*tagsInput*/
+                        interests: tagsInput
+                        /*
                         {
                             $each : tagsInput
                         }
+                        */
                     }
                 })
             }
@@ -242,15 +243,6 @@ router.get("/get-causes/country", async (req, res) => {
         console.log("No user was found. This is funny because it works on post man")
         res.status(401).send('Unauthorized')
     }
-})
-
-//for logging out
-router.delete("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if(err) throw err;
-        res.clearCookie("session-id");
-        res.send("Logged out successfully")
-    })
 })
 
 

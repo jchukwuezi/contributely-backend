@@ -244,15 +244,6 @@ router.get("/get-causes/country", async (req, res) => {
     }
 })
 
-//for logging out
-router.delete("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if(err) throw err;
-        res.clearCookie("session-id");
-        res.send("Logged out successfully")
-    })
-})
-
 
 
 //this line is needed to access this api route from the app.js folder

@@ -71,10 +71,10 @@ const getCausesByCountry = async (url) => {
     parser.parseStringPromise(data)
     .then((res)=>{
 
-        
-        const project1 = res["projects"]["project"][9]
-        const project2 = res["projects"]["project"][8]
-        const project3 = res["projects"]["project"][7]
+        /*
+        const project1 = res["projects"]["project"][0]
+        const project2 = res["projects"]["project"][1]
+        const project3 = res["projects"]["project"][2]
 
         const project1Obj = {
             image: project1["imageLink"],
@@ -99,6 +99,14 @@ const getCausesByCountry = async (url) => {
         
 
         causeListCountry.push(project1Obj, project2Obj, project3Obj)
+
+        */
+
+        const projects = res["projects"]["project"]
+        projects.forEach(project => {
+            causeListCountry.push(project)
+        });
+        //causeListCountry.push(projects)
     })
     .catch((err)=> {
         console.error(err)
