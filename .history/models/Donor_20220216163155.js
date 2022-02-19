@@ -42,12 +42,11 @@ const DonorSchema = new mongoose.Schema({
 
     //list of any causes that they may be interested in
     causeCollection: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'OnlineCause'
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'OnlineCause'
     ]
-        
+
+    
 })
 
 
