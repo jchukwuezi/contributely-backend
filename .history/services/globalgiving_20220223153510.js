@@ -71,7 +71,7 @@ const getCauseByInterest = async (interest) => {
     const data = await causeResponse.text()
     parser.parseStringPromise(data)
     .then((res)=>{
-        //const projectList = res["projects"]
+        const projectList = res["projects"]
         const random = (min, max) => {
             return Math.random() * (max - min) + min 
         }

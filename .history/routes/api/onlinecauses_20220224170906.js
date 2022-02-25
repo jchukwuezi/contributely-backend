@@ -7,7 +7,7 @@ const {getCountryUrl, getCausesByCountry, getCausesByInterests, causeListCountry
 //global giving causes
 
 //getting 3 causes from country
-router.get("/causes/global-giving/country", async (req, res)=>{
+router.get("causes/global-giving/country", async (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         Donor.findOne({_id:req.session.donor.id}).then((donor)=>{
@@ -34,7 +34,7 @@ router.get("/causes/global-giving/country", async (req, res)=>{
 
 
 //getting a cause for interests
-router.get("/causes/global-giving/interests", (req, res)=>{
+router.get("causes/global-giving/interests", (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         Donor.findOne({_id:req.session.donor.id}).then(async (donor)=>{
@@ -68,28 +68,9 @@ router.get("/causes/global-giving/interests", (req, res)=>{
 
 
 //go fund me causes
-router.get("/causes/gofundme/interests", (req, res) => {
-    //returning 3 causes 
-    //want to do matching based off of interests with the array of gofundme categories
-})
-
-//getting the causes in the collections of the donor
-router.get("/collection", (req, res)=> {
+router.get("causes/gofundme/interests", (req, res) => {
 
 })
+//returning 3 causes 
+//want to do matching based off of interests with the array of available 
 
-//adding a cause to a collection
-router.post("/collection/add", (req, res)=> {
-
-})
-
-//deleting a cause to a collection
-router.delete("/collection/remove", (req, res)=> {
-
-})
-
-
-
-
-
-module.exports = router;

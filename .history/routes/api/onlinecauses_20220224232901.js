@@ -84,7 +84,7 @@ router.post("/collection/add", (req, res)=> {
 })
 
 //deleting a cause to a collection
-router.delete("/collection/remove", (req, res)=> {
+router.delete("/collection/add", (req, res)=> {
 
 })
 

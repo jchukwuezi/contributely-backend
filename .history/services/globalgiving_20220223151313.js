@@ -14,8 +14,7 @@ const getCountryUrl = (countryCode) => {
     return 'https://api.globalgiving.org/api/public/projectservice/countries/' + countryCode +  '/projects?api_key=' + process.env.GG_API_KEY;
 }
 
-/*
-const getCausesByInterests = async (url) => {
+const getCausesByInterest = async (url) => {
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
     const causeResponse = await fetch(url, {
         method: 'GET',
@@ -58,7 +57,6 @@ const getCausesByInterests = async (url) => {
         console.error(err)
     })
 }
-*/
 
 //returns singular cause, will call this method a few times to send an array in 
 const getCauseByInterest = async (interest) => {
@@ -71,7 +69,7 @@ const getCauseByInterest = async (interest) => {
     const data = await causeResponse.text()
     parser.parseStringPromise(data)
     .then((res)=>{
-        //const projectList = res["projects"]
+        const projectList = res["projects"]
         const random = (min, max) => {
             return Math.random() * (max - min) + min 
         }
@@ -98,28 +96,18 @@ const getCauseByInterest = async (interest) => {
         proj2 = getCauseByInterest(interests[1])
         //making sure it doesn't return the same project as before 
         proj3 = getCauseByInterest(interests[1])
-        causeListInterest.push(proj1, proj2, proj3)
     }
 
     else if(interests.length === 3){
         proj1 = getCauseByInterest(interests[0])
         proj2 = getCauseByInterest(interests[1])
         proj3 = getCauseByInterest(interests[2])
-        causeListInterest.push(proj1, proj2, proj3)
-    }
-
-    else if(interests.length === 1){
-        proj1 = getCauseByInterest(interests[0])
-        proj2 = getCauseByInterest(interests[0])
-        proj3 = getCauseByInterest(interests[0])
-        causeListInterest.push(proj1, proj2, proj3)
     }
 
     else if(interests.length > 3){
         proj1 = getCauseByInterest(interests[Math.floor(Math.random()* interests.length)])
         proj2 = getCauseByInterest(interests[Math.floor(Math.random()* interests.length)])
         proj3 = getCauseByInterest(interests[Math.floor(Math.random()* interests.length)])
-        causeListInterest.push(proj1, proj2, proj3)
     }
  }
 
@@ -174,7 +162,7 @@ const getCausesByCountry = async (url) => {
 module.exports = {
     getThemeUrl: getThemeUrl,
     getCountryUrl: getCountryUrl,
-    getCausesByInterests: getCausesByInterests,
+    getCausesByInterest: getCausesByInterest,
     getCausesByCountry: getCausesByCountry,
     causeListInterest,
     causeListCountry
