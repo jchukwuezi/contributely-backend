@@ -32,10 +32,14 @@ const OrganisationSchema = new mongoose.Schema({
     },
 
 
-    tags: [{
-            type: String
-        }
+    tags: [
+
     ],
+
+    stripeAccountId:{
+        type: 'String',
+        required: true
+    },
 
     memberList: [
         {

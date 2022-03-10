@@ -31,11 +31,26 @@ const OrganisationSchema = new mongoose.Schema({
         default: Date.now
     },
 
+    //will be updated everytime a user makes a donation
+    balance:{
+        type: Number,
+        default: 0
+    },
 
-    tags: [{
-            type: String
-        }
+    tags: [
+
     ],
+
+    stripeAccountId:{
+        type: 'String',
+        required: true
+    },
+
+    stripeActivationStatus:{
+        type: Boolean,
+        default: false
+    },
+    
 
     memberList: [
         {

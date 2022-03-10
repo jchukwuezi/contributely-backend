@@ -12,6 +12,11 @@ const OrganisationSchema = new mongoose.Schema({
         required: true
     },
 
+    description:{
+        type: String,
+        required: true
+    },
+
     password:{
         type: String,
         required: true
@@ -26,16 +31,32 @@ const OrganisationSchema = new mongoose.Schema({
         default: Date.now
     },
 
+    balance:{
+        type: Number,
+        default: 0
+    },
 
-    tags: [{
-            type: String
-        }
+
+    tags: [
+
     ],
+
+    stripeAccountId:{
+        type: 'String',
+        required: true
+    },
 
     memberList: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Donor'
+        }
+    ],
+
+    initiativeList: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Initiative'
         }
     ]
 
