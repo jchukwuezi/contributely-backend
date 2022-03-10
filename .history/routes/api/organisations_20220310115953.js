@@ -49,21 +49,14 @@ router.post("/register", (req, res) => {
                             product_description: newOrg.description
                         }
                     })
-                    .catch((err)=>{
-                        console.error(err)
-                    })
 
-                    console.log(account)
+
                     //save new organisation
-                    newOrg.stripeAccountId = account.id
-                    await newOrg.save()
-                    res.send(account)
-                    /*
+                    newOrg.save()
                     .then(() => {
                         res.status(200).send({successful: `${newOrg.name} has registered for Contributely`})
                     })
                     .catch((err) => console.log(err));
-                    */
                 })
             );
         }

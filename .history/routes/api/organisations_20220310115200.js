@@ -31,39 +31,15 @@ router.post("/register", (req, res) => {
 
             //hashing the password
             bcrypt.genSalt((err, salt) => 
-                bcrypt.hash(newOrg.password, salt, async (err, hash) => {
+                bcrypt.hash(newOrg.password, salt, (err, hash) => {
                     if(err) throw err;
                     newOrg.password = hash;
-
-                    //creating express account in stripe
-                    const account = await stripe.accounts.create({
-                        email: newOrg.email,
-                        country: 'IE',
-                        capabilities: {
-                            card_payments: {requested: true},
-                            transfers: {requested: true}
-                        },
-                        business_type: 'non_profit',
-                        business_profile: {
-                            name: newOrg.name,
-                            product_description: newOrg.description
-                        }
-                    })
-                    .catch((err)=>{
-                        console.error(err)
-                    })
-
-                    console.log(account)
                     //save new organisation
-                    newOrg.stripeAccountId = account.id
-                    await newOrg.save()
-                    res.send(account)
-                    /*
+                    newOrg.save()
                     .then(() => {
                         res.status(200).send({successful: `${newOrg.name} has registered for Contributely`})
                     })
                     .catch((err) => console.log(err));
-                    */
                 })
             );
         }
