@@ -10,6 +10,9 @@ const bodyParser =  require('body-parser');
 const dotenv = require('dotenv')
 const connectDB = require('./config/db')
 const MAX_AGE = 1000 * 60 * 60 * 3; //three hours
+
+//load config
+dotenv.config({path: './config/config.env'})
 //declaring donor route
 const Donors = require('./routes/api/donors')
 //declaring organisation route
@@ -19,8 +22,7 @@ const Initiatives = require('./routes/api/initiatives')
 //declaring onlinecause route
 const OnlineCauses = require('./routes/api/onlinecauses')
 
-//load config
-dotenv.config({path: './config/config.env'})
+
 
 
 connectDB()

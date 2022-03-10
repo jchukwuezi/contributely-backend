@@ -39,7 +39,6 @@ router.post("/register", (req, res) => {
                     const account = await stripe.accounts.create({
                         email: newOrg.email,
                         country: 'IE',
-                        type: 'express',
                         capabilities: {
                             card_payments: {requested: true},
                             transfers: {requested: true}
@@ -82,7 +81,7 @@ router.post("/login", (req, res) => {
     Organisation.findOne({ email }).then((org) => {
         if(!org) return res.status(400).send('User does not exist')
 
-        bcrypt.compare(password, org.password).then(async (isMatch) => {
+        bcrypt.compare(password, org.password).then((isMatch) => {
             if(!isMatch) return res.status(400).send('Invalid credentials')
             const sessOrg = {
                 id: org._id,
@@ -103,44 +102,12 @@ router.post("/login", (req, res) => {
             console.log('Details of the entire session')
             console.log(req.session)
 
-            //res.status(200).send(`${sessOrg.name} has successfully logged in to the application`)
-            //im going to have to check if org has onboarded in this route, if not a new link will be created.
-            if (org.stripeActivationStatus === false){
-                const accountLink = await stripe.accountLinks.create({
-                    account: org.stripeAccountId,
-                    refresh_url: 'http://localhost:3000/failure',
-                    return_url: 'http://localhost:3000/success',
-                    type: 'account_onboarding'
-                })
-                console.log("User still needs to be onboarded, the link for this is here:")
-                console.log(accountLink)
-                return res.status(202).send(accountLink.url)
-            }
-
-            console.log('User has been found and has already onboarded')
             res.status(200).send(`${sessOrg.name} has successfully logged in to the application`)
+            //im going to have to check if org has onboarded in this route, if not a new link will be created.
+            console.log('User has been found')
         })
 
     })
-})
-
-router.post("/activate-stripe", async (req, res) => {
-    //const id = req.params.orgId;
-    await Organisation.updateOne({_id: req.session.org.id}, {stripeActivationStatus: true})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    res.send('Stripe onboarding successful')
-})
-
-router.get("/stripe-status", async (req, res) => {
-    //const id = req.params.orgId;
-    const stripeStatus = await Organisation.findById(req.session.org.id).select({_id:0, stripeActivationStatus:1})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    console.log(stripeStatus.stripeActivationStatus)
-    res.send(stripeStatus.stripeActivationStatus)
 })
 
 

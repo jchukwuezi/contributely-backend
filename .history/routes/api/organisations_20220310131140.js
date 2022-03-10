@@ -39,7 +39,6 @@ router.post("/register", (req, res) => {
                     const account = await stripe.accounts.create({
                         email: newOrg.email,
                         country: 'IE',
-                        type: 'express',
                         capabilities: {
                             card_payments: {requested: true},
                             transfers: {requested: true}
@@ -103,7 +102,7 @@ router.post("/login", (req, res) => {
             console.log('Details of the entire session')
             console.log(req.session)
 
-            //res.status(200).send(`${sessOrg.name} has successfully logged in to the application`)
+            res.status(200).send(`${sessOrg.name} has successfully logged in to the application`)
             //im going to have to check if org has onboarded in this route, if not a new link will be created.
             if (org.stripeActivationStatus === false){
                 const accountLink = await stripe.accountLinks.create({
@@ -114,33 +113,13 @@ router.post("/login", (req, res) => {
                 })
                 console.log("User still needs to be onboarded, the link for this is here:")
                 console.log(accountLink)
-                return res.status(202).send(accountLink.url)
+                return res.send(accountLink.url)
             }
 
-            console.log('User has been found and has already onboarded')
-            res.status(200).send(`${sessOrg.name} has successfully logged in to the application`)
+            console.log('User has been found')
         })
 
     })
-})
-
-router.post("/activate-stripe", async (req, res) => {
-    //const id = req.params.orgId;
-    await Organisation.updateOne({_id: req.session.org.id}, {stripeActivationStatus: true})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    res.send('Stripe onboarding successful')
-})
-
-router.get("/stripe-status", async (req, res) => {
-    //const id = req.params.orgId;
-    const stripeStatus = await Organisation.findById(req.session.org.id).select({_id:0, stripeActivationStatus:1})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    console.log(stripeStatus.stripeActivationStatus)
-    res.send(stripeStatus.stripeActivationStatus)
 })
 
 

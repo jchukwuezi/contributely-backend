@@ -39,7 +39,6 @@ router.post("/register", (req, res) => {
                     const account = await stripe.accounts.create({
                         email: newOrg.email,
                         country: 'IE',
-                        type: 'express',
                         capabilities: {
                             card_payments: {requested: true},
                             transfers: {requested: true}
@@ -122,25 +121,6 @@ router.post("/login", (req, res) => {
         })
 
     })
-})
-
-router.post("/activate-stripe", async (req, res) => {
-    //const id = req.params.orgId;
-    await Organisation.updateOne({_id: req.session.org.id}, {stripeActivationStatus: true})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    res.send('Stripe onboarding successful')
-})
-
-router.get("/stripe-status", async (req, res) => {
-    //const id = req.params.orgId;
-    const stripeStatus = await Organisation.findById(req.session.org.id).select({_id:0, stripeActivationStatus:1})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    console.log(stripeStatus.stripeActivationStatus)
-    res.send(stripeStatus.stripeActivationStatus)
 })
 
 
