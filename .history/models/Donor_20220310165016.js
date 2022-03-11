@@ -36,11 +36,18 @@ const DonorSchema = new mongoose.Schema({
         default: Date.now
     },
 
-    interests: [{
-        type: String
-    }]
+    interests: [
+        
+    ],
 
-    
+    //list of any causes that they may be interested in
+    causeCollection: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'OnlineCause'
+        }
+    ]
+        
 })
 
 
