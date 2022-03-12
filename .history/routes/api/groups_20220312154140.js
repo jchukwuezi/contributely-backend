@@ -64,14 +64,11 @@ router.get(":groupId/initiatives", async (req, res)=>{
 router.get(":groupId/initiatives/:initiativeId", async (req, res) => {
     const groupId = req.params.groupId
     const initiativeId = req.params.initiativeId
-
-    const initiative = await Organisation.findOne({_id:groupId}).find({'initiativeList._id': initiativeId}).populate({path: 'category'})
+    
+    const initiative = await Organisation.findOne({_id:id}).find({'initiativeList._id': initiativeId}).populate({path: 'category'})
     .catch((err) => {
         console.log(err)
     })
-
-    console.log(initiative)
-    res.send(initiative)
 })
 
 //router.get("/")
