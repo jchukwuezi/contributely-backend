@@ -62,8 +62,8 @@ app.use(session({
 app.use("/api/donors", Donors);
 app.use("/api/organisations", Organisations);
 app.use("/api/initiatives", Initiatives);
-app.use("/api/onlinecauses", OnlineCauses)
-app.use("/api/groups", Groups)
+app.use("api/onlinecauses", OnlineCauses)
+app.use("api/groups", Groups)
 
 app.listen(4000, ()=>{
     console.log('Server has started')

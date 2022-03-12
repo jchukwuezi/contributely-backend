@@ -15,8 +15,6 @@ router.get("/groups", async (req, res)=> {
         console.log(err)
     })
 
-    //below is the code for the match that will only show certain groups, for now it will show all of them
-    /*
     Organisation.find({}, 'tags _id' ).then((orgDetails)=>{
         const orgIdMatches = []
         for (i<0; i<orgDetails.length; i++){
@@ -25,7 +23,6 @@ router.get("/groups", async (req, res)=> {
             if (intersec.length !== 0){ //if there are some matches
                 //make an array list of the organisation ids that it matches with
                 orgIdMatches.push(orgDetails[i]["_id"])
-                detailsOfMatches(orgIdMatches)
             }
         }
     })
@@ -41,7 +38,7 @@ router.get("/groups", async (req, res)=> {
         }
     }
 
-    */
+
     res.send(orgDetails)
 })
 
