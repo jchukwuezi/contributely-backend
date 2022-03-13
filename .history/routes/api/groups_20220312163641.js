@@ -77,29 +77,7 @@ router.get(":groupId/initiatives/:initiativeId", async (req, res) => {
 
 //this route will allow user to make payment for specific initiative
 router.post(":groupId/:initiativeId/make-payment", async (req, res) => {
-    const groupId = req.params.groupId
-    const initiativeId = req.params.initiativeId
-    //elements needed from client to create pdf and payment data
-    const {onBehalfOf, amount} = req.body;
-    try{
-        amountInCent = amount * 100;
-        const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
-        const paymentIntent = await stripe.paymentIntents.create({
-            payment_method_types: ['card'],
-            amount: amountInCent,
-            currency: 'eur',
-            on_behalf_of: orgStripeId,
-            transfer_data:{
-                destination: orgStripeId
-            }
-        })
-        res.json({
-            clientSecret: paymentIntent.client_secret
-        })
-    }
-    catch(err){
-        res.status(400).json({error: {message: err.message}})
-    }
+
 })
 
 

@@ -98,7 +98,7 @@ router.post(":groupId/:initiativeId/make-payment", async (req, res) => {
         })
     }
     catch(err){
-        res.status(400).json({error: {message: err.message}})
+        res.status(400).json({error: {message: e.message}})
     }
 })
 
