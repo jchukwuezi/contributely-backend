@@ -78,8 +78,14 @@ router.get("/:groupId/initiatives/:initiativeId", async (req, res) => {
 
     /*
     if(sessDonor){
-    
+        const initiative = await Organisation.findOne({_id:groupId}).find({'initiativeList._id': initiativeId})
+        .catch((err) => {
+            console.log(err)
+        })
+        console.log(initiative)
+        res.send(initiative)   
     }
+
     else{
         console.log("No user was found.")
         res.status(401).send('Unauthorized')
@@ -95,6 +101,41 @@ router.get("/:groupId/initiatives/:initiativeId", async (req, res) => {
 })
 
 //this route will allow user to make payment for specific initiative
+router.post("/:groupId/:initiativeId/make-payment", async (req, res) => {
+    const groupId = req.params.groupId
+    const initiativeId = req.params.initiativeId
+    console.log(req.params)
+    //const sessDonor = req.session.donor;
+    //elements needed from client to create pdf and payment data
+    const {onBehalfOf, amount, email} = req.body;
+    console.log(req.body)
+    try{
+        amountInCent = amount * 100;
+        console.log(amountInCent)
+        const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
+        console.log("Stripe Id of org to make donation to")
+        console.log(orgStripeId)
+        const paymentIntent = await stripe.paymentIntents.create({
+            payment_method_types: ['card'],
+            amount: amountInCent,
+            currency: 'eur',
+            on_behalf_of: orgStripeId.stripeAccountId,
+            transfer_data:{
+                destination: orgStripeId.stripeAccountId
+            }
+        })
+        console.log("Payment intent below")
+        //console.log(paymentIntent)
+        console.log(paymentIntent.client_secret)
+        res.json({
+            clientSecret: paymentIntent.client_secret
+        })
+    }
+    catch(err){
+        res.status(400).json({error: {message: err.message}})
+    }
+})
+
 //in this route I will put organisation and initiative in stripe meta data
 router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
     const groupId = req.params.groupId

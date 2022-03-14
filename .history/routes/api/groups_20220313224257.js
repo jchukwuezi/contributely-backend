@@ -43,99 +43,68 @@ router.get("/groups", async (req, res)=> {
     }
 
     */
-    console.log(orgDetails)
     res.send(orgDetails)
 })
 
 //for a specific group, this route will return all of it's initatives
-router.get("/:groupId/initiatives", async (req, res)=>{
+router.get(":groupId/initiatives", async (req, res)=>{
     const id = req.params.groupId;
-    console.log('id in paramter')
-    console.log(id)
     //finding the initiatives of this group
     //query to get specific fields from the initiative list
    const populateQuery = [{
         path: 'initiativeList',
-        select: ['title, description, goalAmount, creationDate']
+        select: ['title description goalAmount creationDate']
     }]
-    //const initiatives = Organisation.findOne({_id:id}).populate("initiativeList")
-    const initiatives = await Organisation.findOne({_id:id}).populate('initiativeList')
-    .catch((err) => {
-        console.log(err)
-    })
-    console.log(initiatives.initiativeList)
-    //console.log(initiatives)
-    res.send(initiatives.initiativeList)
+    //const initatives = Organisation.findOne({_id:id}).populate("initiativeList")
+    const initiatives = await Organisation.findOne({_id:id}).populate(populateQuery)
+    console.log(initiatives)
+    res.send(initiatives)
     //res.json(initatives.initiativeList)
 })
 
-
-
-router.get("/:groupId/initiatives/:initiativeId", async (req, res) => {
+router.get(":groupId/initiatives/:initiativeId", async (req, res) => {
     const groupId = req.params.groupId
     const initiativeId = req.params.initiativeId
-    //const sessDonor = req.session.donor;
+    const sessDonor = req.session.donor;
 
-    /*
     if(sessDonor){
-    
+        const initiative = await Organisation.findOne({_id:groupId}).find({'initiativeList._id': initiativeId}).populate({path: 'category'})
+        .catch((err) => {
+            console.log(err)
+        })
+        console.log(initiative)
+        res.send(initiative)   
     }
+    
     else{
         console.log("No user was found.")
         res.status(401).send('Unauthorized')
     }
-    */
-    //const initiative = await Organisation.findOne({_id:groupId}).find({'initiativeList._id': initiativeId})
-    const initiative = await Initiative.findOne({_id:initiativeId})
-    .catch((err) => {
-        console.log(err)
-    })
-    console.log(initiative)
-    res.send(initiative)   
 })
 
 //this route will allow user to make payment for specific initiative
-//in this route I will put organisation and initiative in stripe meta data
-router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
+router.post(":groupId/:initiativeId/make-payment", async (req, res) => {
     const groupId = req.params.groupId
     const initiativeId = req.params.initiativeId
-    //finding the group and initiative name for metadata section
-    const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
-    const groupName = await Organisation.findById(groupId).select({_id:0, name:1})
-    const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
-    const {onBehalfOf, amount, email} = req.body;
+    //elements needed from client to create pdf and payment data
+    const {onBehalfOf, amount} = req.body;
     try{
         amountInCent = amount * 100;
-        const paymentInfo = {
-            initiativeName: initiativeName.title,
-            groupName: groupName.name,
-            inTheNameOf: onBehalfOf,
-            amount: amount,
-            email: email
-        }
+        const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
         const paymentIntent = await stripe.paymentIntents.create({
             payment_method_types: ['card'],
             amount: amountInCent,
             currency: 'eur',
-            on_behalf_of: orgStripeId.stripeAccountId,
+            on_behalf_of: orgStripeId,
             transfer_data:{
-                destination: orgStripeId.stripeAccountId
-            },
-            metadata:{
-                initiativeName: initiativeName.title,
-                groupName: groupName.name,
-                inTheNameOf: onBehalfOf,
-                amount: amount,
-                email: email
+                destination: orgStripeId
             }
         })
-        console.log(paymentIntent.client_secret)
         res.json({
             clientSecret: paymentIntent.client_secret
         })
     }
     catch(err){
-        console.log(err)
         res.status(400).json({error: {message: err.message}})
     }
 })
