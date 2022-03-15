@@ -133,8 +133,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
         })
         console.log(paymentIntent.client_secret)
         res.json({
-            clientSecret: paymentIntent.client_secret,
-            paymentInfo: paymentInfo
+            clientSecret: paymentIntent.client_secret
         })
     }
     catch(err){
@@ -143,5 +142,21 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
     }
 })
 
+router.post("/donation/create/payment-pdf", (req, res) =>{
+    const {initiativeName, groupName, inTheNameOf, amount, email} = req.body
+    pdf.create(pdfTemplate(initiativeName, groupName, inTheNameOf, amount, email)).toFile('payment.pdf', (err) =>{
+        if(err){
+            return res.send(Promise.reject());
+        } 
+        return res.send(Promise.resolve());
+    })
+})
+
+router.get("/donation/payment-pdf", (req, res) =>{
+    res.sendFile(`${__dirname}/payment.pdf`)
+})
+
+
+//router.get("/")
 
 module.exports = router;
