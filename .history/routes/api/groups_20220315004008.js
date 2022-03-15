@@ -5,6 +5,7 @@ const Initiative = require('../../models/Initiative')
 const Organisation = require('../../models/Organisation')
 const Donor = require('../../models/Donor')
 const groups = []
+const pdfTemplate = require('../../documents/pdfTemplate')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
 //returning list of organisations on contributely

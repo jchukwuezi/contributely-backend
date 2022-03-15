@@ -68,7 +68,7 @@ const globalGivingCategories = [
     "sport"
 ]
 
-module.exports = {
+export default {
     goFundMeCateogries,
     globalGivingCategories,
     goFundMeCategoryURLs

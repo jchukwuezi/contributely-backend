@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 const Donor = require('../../models/Donor')
 const {getCountryUrl, getCausesByCountry, getCausesByInterests, causeListCountry, causeListInterest} = require('../../services/globalgiving')
+const {goFundMeCateogries, globalGivingCategories, goFundMeCateogryURLs} = require('../../data/cause-categories.js')
 const {getGoFundMeCauses, goFundMeCauses} = require('../../services/gofundme')
 //global giving causes
 

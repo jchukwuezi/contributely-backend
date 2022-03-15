@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const Donor = require('../../models/Donor')
 const {getCountryUrl, getCausesByCountry, getCausesByInterests, causeListCountry, causeListInterest} = require('../../services/globalgiving')
-const {getGoFundMeCauses, goFundMeCauses} = require('../../services/gofundme')
+
 //global giving causes
 
 //getting 3 causes from country
@@ -68,30 +68,10 @@ router.get("/causes/global-giving/interests", (req, res)=>{
 
 
 //go fund me causes
-router.get("/causes/gofundme/interests", async (req, res) => {
+router.get("/causes/gofundme/interests", (req, res) => {
     //returning 3 causes 
     //want to do matching based off of interests with the array of gofundme categories
-    const sessDonor = req.session.donor;
-    if(sessDonor){
-        //const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
-        //looking for direct matches of donor interest and gofundme categories
-        //will need to figure out interest and cause matching
-        //const intersec = interests.interests.filter(elem=> goFundMeCateogries.includes(elem))
-        //looking at the size of intersection
-
-        //if it's more than 3, get the first 3 and find a cause for each
-
-        //if it's 2, get two for one, and one for the other
-
-        //if it's 1, get three for one
-        await getGoFundMeCauses
-        res.send(goFundMeCauses)
-    }   
-    else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
-    }
-
+    
 })
 
 //getting the causes in the collections of the donor

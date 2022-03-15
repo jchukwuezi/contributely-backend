@@ -3,7 +3,8 @@ const express = require('express')
 const router = express.Router()
 const Donor = require('../../models/Donor')
 const {getCountryUrl, getCausesByCountry, getCausesByInterests, causeListCountry, causeListInterest} = require('../../services/globalgiving')
-const {getGoFundMeCauses, goFundMeCauses} = require('../../services/gofundme')
+const {goFundMeCateogries, globalGivingCategories, goFundMeCateogryURLs} = require('../../data/cause-categories.js')
+
 //global giving causes
 
 //getting 3 causes from country
@@ -84,8 +85,6 @@ router.get("/causes/gofundme/interests", async (req, res) => {
         //if it's 2, get two for one, and one for the other
 
         //if it's 1, get three for one
-        await getGoFundMeCauses
-        res.send(goFundMeCauses)
     }   
     else{
         console.log("No user was found. This is funny because it works on post man")

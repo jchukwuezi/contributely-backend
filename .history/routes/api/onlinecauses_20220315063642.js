@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 const Donor = require('../../models/Donor')
 const {getCountryUrl, getCausesByCountry, getCausesByInterests, causeListCountry, causeListInterest} = require('../../services/globalgiving')
+const {goFundMeCateogries, globalGivingCategories, goFundMeCateogryURLs} = require('../../data/cause-categories.js')
 const {getGoFundMeCauses, goFundMeCauses} = require('../../services/gofundme')
 //global giving causes
 
@@ -91,7 +92,7 @@ router.get("/causes/gofundme/interests", async (req, res) => {
         console.log("No user was found. This is funny because it works on post man")
         res.status(401).send('Unauthorized')
     }
-
+    
 })
 
 //getting the causes in the collections of the donor
