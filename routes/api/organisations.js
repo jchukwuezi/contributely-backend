@@ -109,8 +109,8 @@ router.post("/login", (req, res) => {
             if (org.stripeActivationStatus === false){
                 const accountLink = await stripe.accountLinks.create({
                     account: org.stripeAccountId,
-                    refresh_url: 'http://localhost:3000/failure',
-                    return_url: 'http://localhost:3000/success',
+                    refresh_url: 'http://localhost:3000/org/stripe/onboard/failure',
+                    return_url: 'http://localhost:3000/org/stripe/onboard/success',
                     type: 'account_onboarding'
                 })
                 console.log("User still needs to be onboarded, the link for this is here:")

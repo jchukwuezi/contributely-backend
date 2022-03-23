@@ -1,4 +1,4 @@
-const goFundMeCategories =  new Map([
+export const goFundMeCategories =  new Map([
     ["medical", '/en-ie/start/medical-fundraising'],
     ["memorial", '/en-ie/start/memorial-fundraising'],
     ["emergency", '/en-ie/start/emergency-fundraising'],

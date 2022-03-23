@@ -48,6 +48,6 @@ const globalGivingThemes = [
 ]
 
 module.exports = {
-    goFundMeCategories,
+    goFundMeCategories: goFundMeCategories,
     globalGivingThemes
 }
