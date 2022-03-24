@@ -9,9 +9,6 @@ const cheerio = require('cheerio')
 const fetch = require('node-fetch')
 const express = require('express')
 const router = express.Router()
-const headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-}
 
 router.get("/get", (req, res) =>{
     //add donor auth 
@@ -20,9 +17,7 @@ router.get("/get", (req, res) =>{
     const base_url = getCategoryUrl(KickstarterCategoryCodes.get("Technology"))
     console.log(base_url)
     const findCauseURLs = async() =>{
-        const data = await fetch(base_url, {
-            headers: headers
-        })
+        const data = await fetch(base_url)
         const pageBody = await data.text()
         const $ = cheerio.load(pageBody)
         //finding the first 3 causes in that category

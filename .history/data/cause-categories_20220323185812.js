@@ -67,6 +67,5 @@ const globalGivingThemes = [
 
 module.exports = {
     goFundMeCategories,
-    globalGivingThemes,
-    KickstarterCategoryCodes
+    globalGivingThemes
 }

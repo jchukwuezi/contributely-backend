@@ -36,10 +36,10 @@ const getCausesByInterests = async (url) => {
     parser.parseStringPromise(data)
     .then(async (res) => {
 
-        const project1 = res["projects"]["project"][1]
-        const project2 = res["projects"]["project"][2]
-        const project3 = res["projects"]["project"][3]
-
+        const project1 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+        const project2 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+        const project3 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+        
         const project1Obj = {
             image: project1["imageLink"],
             title: project1["title"],

@@ -36,9 +36,15 @@ const getCausesByInterests = async (url) => {
     parser.parseStringPromise(data)
     .then(async (res) => {
 
-        const project1 = res["projects"]["project"][1]
-        const project2 = res["projects"]["project"][2]
-        const project3 = res["projects"]["project"][3]
+        const project1 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+        const project2 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+        const project3 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+        
+        //const proj1url = await getProjectUrl(specificIdUrl(project1["id"]))
+        //console.log("Proj 1 url")
+        //console.log(proj1url)
+        //const proj2url
+        //const proj3url
 
         const project1Obj = {
             image: project1["imageLink"],
@@ -46,8 +52,7 @@ const getCausesByInterests = async (url) => {
             country: project1["country"],
             summary: project1["summary"],
             id: project1["id"],
-            url: await getProjectUrl(specificIdUrl(project1["id"])),
-            themes: await getProjectThemes(specificIdUrl(project1["id"]))
+            url: getProjectUrl(specificIdUrl(project1["id"]))
         }
 
         const project2Obj = {
@@ -56,8 +61,7 @@ const getCausesByInterests = async (url) => {
             country: project2["country"],
             summary: project2["summary"],
             id: project2["id"],
-            url: await getProjectUrl(specificIdUrl(project2["id"])),
-            themes: await getProjectThemes(specificIdUrl(project2["id"]))
+            url:getProjectUrl(specificIdUrl(project2["id"]))
         }
 
         const project3Obj = {
@@ -66,8 +70,7 @@ const getCausesByInterests = async (url) => {
             country: project3["country"],
             summary: project3["summary"],
             id: project3["id"],
-            url: await getProjectUrl(specificIdUrl(project3["id"])),
-            themes: await getProjectThemes(specificIdUrl(project3["id"]))
+            url: getProjectUrl(specificIdUrl(project3["id"]))
         }
 
         causeListInterest.push(project1Obj, project2Obj, project3Obj)
@@ -143,6 +146,7 @@ const getCauseByInterest = async (interest) => {
  */
 
  const getProjectUrl = async(url) =>{
+    let projectUrl = ""
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
     const causeResponse = await fetch(url, {
         method: 'GET',
@@ -150,29 +154,24 @@ const getCauseByInterest = async (interest) => {
     })
     const data = await causeResponse.text()
     const page = await parser.parseStringPromise(data)
-    const projectLink = page["project"]["projectLink"]
-    return projectLink
- }
-
- const getProjectThemes = async(url) =>{
-    const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
-    const causeResponse = await fetch(url, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'}
+    console.log(page[projectLink])
+    /*
+    parser.parseStringPromise(data)
+    .then((res)=>{
+        //const url = res["project"]["projectLink"]
+        projectUrl = res["project"]["projectLink"]
+        /*
+        console.log("Finding url")
+        console.log(url)
+        projectUrl = url
+        console.log(projectUrl)
+        return projectUrl
     })
-    const data = await causeResponse.text()
-    const page = await parser.parseStringPromise(data)
-    const themes = page["project"]["themes"]["theme"]
-    //console.log(themes)
-    let ids = []
-    for(let i=0; i<themes.length; i++){
-        //console.log(themes[i]["id"])
-        ids.push(themes[i]["id"])
-    }
-    return ids
+    .catch((err)=> {
+        console.error(err)
+    })
+    */
  }
-
-
 
 const getCausesByCountry = async (url) => {
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
