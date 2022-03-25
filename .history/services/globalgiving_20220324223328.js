@@ -58,7 +58,7 @@ const getCausesByInterests = async (url) => {
             country: project2["country"],
             summary: project2["summary"],
             country: project2["country"],
-            mission: project2["organization"]["mission"],
+            mission: project2["mission"],
             id: project2["id"],
             url: await getProjectUrl(specificIdUrl(project2["id"])),
             themes: await getProjectThemes(specificIdUrl(project2["id"]))
@@ -70,7 +70,7 @@ const getCausesByInterests = async (url) => {
             country: project3["country"],
             summary: project3["summary"],
             country: project3["country"],
-            mission: project3["organization"]["mission"],
+            mission: project3["mission"],
             id: project3["id"],
             url: await getProjectUrl(specificIdUrl(project3["id"])),
             themes: await getProjectThemes(specificIdUrl(project3["id"]))

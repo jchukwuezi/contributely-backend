@@ -45,8 +45,6 @@ const getCausesByInterests = async (url) => {
             title: project1["title"],
             country: project1["country"],
             summary: project1["summary"],
-            country: project1["country"],
-            mission: project1["organization"]["mission"],
             id: project1["id"],
             url: await getProjectUrl(specificIdUrl(project1["id"])),
             themes: await getProjectThemes(specificIdUrl(project1["id"]))
@@ -57,8 +55,6 @@ const getCausesByInterests = async (url) => {
             title: project2["title"],
             country: project2["country"],
             summary: project2["summary"],
-            country: project2["country"],
-            mission: project2["organization"]["mission"],
             id: project2["id"],
             url: await getProjectUrl(specificIdUrl(project2["id"])),
             themes: await getProjectThemes(specificIdUrl(project2["id"]))
@@ -69,8 +65,6 @@ const getCausesByInterests = async (url) => {
             title: project3["title"],
             country: project3["country"],
             summary: project3["summary"],
-            country: project3["country"],
-            mission: project3["organization"]["mission"],
             id: project3["id"],
             url: await getProjectUrl(specificIdUrl(project3["id"])),
             themes: await getProjectThemes(specificIdUrl(project3["id"]))
@@ -141,8 +135,6 @@ const getCausesByCountry = async (url) => {
             title: project1["title"],
             country: project1["country"],
             summary: project1["summary"],
-            goal: project1["goal"],
-            longTermImpact: project1["longTermImpact"],
             id: project1["id"],
             url: await getProjectUrl(specificIdUrl(project1["id"])),
             themes: await getProjectThemes(specificIdUrl(project1["id"]))
@@ -153,8 +145,6 @@ const getCausesByCountry = async (url) => {
             title: project2["title"],
             country: project2["country"],
             summary: project2["summary"],
-            goal: project2["goal"],
-            longTermImpact: project2["longTermImpact"],
             id: project2["id"],
             url: await getProjectUrl(specificIdUrl(project2["id"])),
             themes: await getProjectThemes(specificIdUrl(project2["id"]))
@@ -165,8 +155,6 @@ const getCausesByCountry = async (url) => {
             title: project3["title"],
             country: project3["country"],
             summary: project3["summary"],
-            goal: project3["goal"],
-            longTermImpact: project3["longTermImpact"],
             id: project3["id"],
             url: await getProjectUrl(specificIdUrl(project3["id"])),
             themes: await getProjectThemes(specificIdUrl(project3["id"]))

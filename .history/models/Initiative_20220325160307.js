@@ -23,7 +23,7 @@ const InitiativeSchema = new mongoose.Schema({
         default: 0
     },
 
-    amountToDateDonated:{
+    totalAmountDonated:{
         type: Number,
         default: 0
     },
@@ -39,10 +39,10 @@ const InitiativeSchema = new mongoose.Schema({
 
     active:{
         type: Boolean,
-        default: true
+        default: false
     },
 
-    closingDate:{
+    endedAt:{
         type: Date,
     },
 

@@ -39,7 +39,7 @@ router.get("/get", async (req, res) => {
             const $ = cheerio.load(pageBody)
             const title = $('h1.a-campaign-title').text()
             const description = $('div.o-campaign-description').text()
-            const categories = $('a.m-campaign-byline-type.divider-prefix.meta-divider.flex-container.align-center.color-dark-gray.hrt-tertiary-button.hrt-base-button.hrt-link.hrt-link--gray-dark.hrt-link--unstyled').text()
+            const donationNumbers = $('div.mb2x.show-for-large.text-stat.text-stat-title').text()
             let summary = description.split('. ', 1)[0]
             summary = summary.replace(/(\r\n|\n|\r)/gm, "")
             const causeUrl = link
@@ -53,7 +53,7 @@ router.get("/get", async (req, res) => {
                 "description": summary,
                 "url": causeUrl,
                 "goalAmount": goalAmount,
-                "categories": categories,
+                "amountOfDonations": donationNumbers,
                 "image": imgUrl,
                 "dateCreated": dateCreated
             }

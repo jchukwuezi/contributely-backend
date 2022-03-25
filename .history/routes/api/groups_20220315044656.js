@@ -113,12 +113,6 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             amount: amount,
             email: email
         }
-        //to add to donation history of initiative
-        const donation = {
-            amount: amount,
-            email: email,
-            date: Date.now
-        }
         const paymentIntent = await stripe.paymentIntents.create({
             payment_method_types: ['card'],
             amount: amountInCent,
@@ -134,9 +128,6 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
                 amount: amount,
                 email: email
             }
-        })
-        await Initiative.findById(initiativeId).update({
-            $push: {donationHistory: donation}
         })
         console.log(paymentIntent.client_secret)
         res.json({
