@@ -88,12 +88,12 @@ router.patch("/update-balance/:initiativeId", async (req, res) => {
         const balance = history.reduce((n, {amount}) => n + amount, 0)
         const value = await Initiative.findByIdAndUpdate(initiativeId, {$set: {amountToDateDonated: balance}})
         .catch((err)=>{
-            res.send(error)
+            res.send({"balanceError": err})
         })
         res.send(value)
         console.log(value)
     }
-
+    
     else{
         console.log("No user was found.")
         res.status(401).send('Unauthorized')
@@ -105,12 +105,11 @@ router.post("/close/:initiativeId", async(req, res)=>{
     const initiativeId = req.params.initiativeId
     const sessOrg = req.session.org;
     if(sessOrg){
-        await Initiative.findById(initiativeId).update({closingDate:Date.now})
-            .catch((err)=>{
-                return res.send({"closingError": err})
-            })
-
-        return res.send('Initiative closed successfully')
+        await Initiative.findById(initiativeId).update({active: false}, {closingDate:Date.now})
+        .catch((err)=>{
+            res.send({"closingError": err})
+        })
+        res.status(200).send('Initiative successfully closed')
     }
 
     else{

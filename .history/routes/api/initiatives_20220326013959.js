@@ -105,7 +105,7 @@ router.post("/close/:initiativeId", async(req, res)=>{
     const initiativeId = req.params.initiativeId
     const sessOrg = req.session.org;
     if(sessOrg){
-        await Initiative.findById(initiativeId).update({closingDate:Date.now})
+        await Initiative.findById(initiativeId).update({active: false}, {closingDate:Date.now})
             .catch((err)=>{
                 return res.send({"closingError": err})
             })

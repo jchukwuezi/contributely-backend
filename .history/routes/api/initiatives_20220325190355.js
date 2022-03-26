@@ -60,63 +60,18 @@ router.get("/get", async (req, res) => {
     }
 })
 
-//route to view the details of a specfic initiative
-router.get("/get/:initiativeId", async(req, res)=> {
-    const initiativeId = req.params.initiativeId
+router.post("/close", async(req, res)=>{
     const sessOrg = req.session.org;
-    if (sessOrg){
-        const initiative = await Initiative.findOne({_id:initiativeId})
-        .catch((err)=>{
-            res.send({"closingError": err})
-        })
-        res.send(initiative)
-    }
 
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-//route to update balance
-router.patch("/update-balance/:initiativeId", async (req, res) => {
-    const initiativeId = req.params.initiativeId
-    const sessOrg = req.session.org;
-    if (sessOrg){
-        const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
-        const history = donations.donationHistory
-        const balance = history.reduce((n, {amount}) => n + amount, 0)
-        const value = await Initiative.findByIdAndUpdate(initiativeId, {$set: {amountToDateDonated: balance}})
-        .catch((err)=>{
-            res.send(error)
-        })
-        res.send(value)
-        console.log(value)
-    }
-
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-//route to close an initiative
-router.post("/close/:initiativeId", async(req, res)=>{
-    const initiativeId = req.params.initiativeId
-    const sessOrg = req.session.org;
     if(sessOrg){
-        await Initiative.findById(initiativeId).update({closingDate:Date.now})
-            .catch((err)=>{
-                return res.send({"closingError": err})
-            })
 
-        return res.send('Initiative closed successfully')
     }
 
     else{
         console.log("No user was found.")
         res.status(401).send('Unauthorized')
     }
+    
 })
 
 router.get("/:title", (req, res) => {

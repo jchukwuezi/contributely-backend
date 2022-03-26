@@ -48,8 +48,8 @@ const InitiativeSchema = new mongoose.Schema({
 
     donationHistory: [
         {
-            amount: {type: Number}, 
-            email: {type: String},
+            amount: Number,
+            email: String,
             date: {
                 type: Date,
                 default: Date.now
