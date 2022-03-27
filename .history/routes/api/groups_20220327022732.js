@@ -54,20 +54,37 @@ router.get("/:groupId/initiatives", async (req, res)=>{
     console.log(id)
     //finding the initiatives of this group
     //query to get specific fields from the initiative list
+   const populateQuery = [{
+        path: 'initiativeList',
+        select: ['title, description, goalAmount, creationDate']
+    }]
     //const initiatives = Organisation.findOne({_id:id}).populate("initiativeList")
-    /*
     const initiatives = await Organisation.findOne({_id:id}).populate('initiativeList')
     .catch((err) => {
         console.log(err)
     })
-    */
-    const activeInitiatives =  await Initiative.find({})
-    .where('organisation').equals(id)
-    .where('active').equals(true)    
-    //console.log(initiatives.initiativeList)
+
+    const activeInitiatives = await Organisation.aggregate([{
+        $lookup:{
+            from: "initiativeList",
+            let: {organisation: "$id"},
+            pipeline: [{
+                $match: {
+                    $expr:{
+                        $and :[
+                            {$eq: ["$$organisation", "organisationId"]},
+                            {$eq: ["$active", true]}
+                        ]
+                    }
+                }
+            }],
+            as: "initiatives"
+        }
+    }])
     console.log(activeInitiatives)
-    res.send(activeInitiatives)
-    //res.send(initiatives.initiativeList)
+    //console.log(initiatives.initiativeList)
+    //console.log(initiatives)
+    res.send(initiatives.initiativeList)
     //res.json(initatives.initiativeList)
 })
 

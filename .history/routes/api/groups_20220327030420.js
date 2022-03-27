@@ -54,6 +54,10 @@ router.get("/:groupId/initiatives", async (req, res)=>{
     console.log(id)
     //finding the initiatives of this group
     //query to get specific fields from the initiative list
+   const populateQuery = [{
+        path: 'initiativeList',
+        select: ['title, description, goalAmount, creationDate']
+    }]
     //const initiatives = Organisation.findOne({_id:id}).populate("initiativeList")
     /*
     const initiatives = await Organisation.findOne({_id:id}).populate('initiativeList')
@@ -61,9 +65,11 @@ router.get("/:groupId/initiatives", async (req, res)=>{
         console.log(err)
     })
     */
+
     const activeInitiatives =  await Initiative.find({})
     .where('organisation').equals(id)
-    .where('active').equals(true)    
+    .where('active').equals(true)
+          
     //console.log(initiatives.initiativeList)
     console.log(activeInitiatives)
     res.send(activeInitiatives)
