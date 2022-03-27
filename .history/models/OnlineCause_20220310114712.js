@@ -28,10 +28,6 @@ const OnlineCauseSchema = new mongoose.Schema({
         type: Number
     },
 
-    categories:{
-        type: String
-    }, 
-
     addedToCollection: {
         type: Date,
         default: Date.now
@@ -45,4 +41,4 @@ const OnlineCauseSchema = new mongoose.Schema({
     
 })
 
-module.exports = mongoose.model('OnlineCause', OnlineCauseSchema)
+module.exports = mongoose.model('OnlineCause', DonorSchema)

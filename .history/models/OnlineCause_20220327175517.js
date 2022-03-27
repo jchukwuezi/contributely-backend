@@ -45,4 +45,4 @@ const OnlineCauseSchema = new mongoose.Schema({
     
 })
 
-module.exports = mongoose.model('OnlineCause', OnlineCauseSchema)
+module.exports = mongoose.model('OnlineCause', DonorSchema)

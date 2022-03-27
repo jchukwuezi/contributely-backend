@@ -11,10 +11,8 @@ router.get("/collection", async (req, res)=> {
     if (sessDonor){
         const collection = await Donor.findById(req.session.donor.id).populate("collection")
         .catch((err)=>{
-            res.send(err)
+            res.send({"closingError": err})
         })
-        console.log('Printing the collection')
-        console.log(collection)
         res.send(collection)
     }
     else{
@@ -39,7 +37,7 @@ router.get("/collection/:causeId", async (req, res)=>{
 //adding a cause to a collection
 
 //global-giving cause by country
-router.post("/collection/add/gg-interest", async (req, res)=> {
+router.post("/collection/add/gg-country", async (req, res)=> {
     const sessDonor = req.session.donor;
     if (sessDonor){
         const {title, url, mission, themes} = req.body;
@@ -64,7 +62,7 @@ router.post("/collection/add/gg-interest", async (req, res)=> {
 })
 
 //global giving cause by interest
-router.post("/collection/add/gg-country", async (req, res)=> {
+router.post("/collection/add/gg-interest", async (req, res)=> {
     const sessDonor = req.session.donor;
     if (sessDonor){
         const {title, url, impact, themes, goal} = req.body;
@@ -91,29 +89,8 @@ router.post("/collection/add/gg-country", async (req, res)=> {
 })
 
 //go fund me cause
-router.post("/collection/add/gfm", async (req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        const {title, url, categories, goal} = req.body;
-        const goalNum = parseFloat(goal)
-        const newCause = new OnlineCause({
-            title: title,
-            url: url,
-            categories: categories,
-            goalAmount: goalNum
-        })
-        await newCause.save()
-        await Donor.findByIdAndUpdate(req.session.donor.id, {$push: newCause._id})
-        .catch((err)=>{
-            res.send({"collectionError": err})
-        })
-        res.send(`You have successfully added ${newCause.title} to your collection`)
-    }
+router.post("/collection/add/gfm", (req, res)=>{
 
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
 })
 
 //deleting a cause to a collection

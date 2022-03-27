@@ -13,8 +13,6 @@ router.get("/collection", async (req, res)=> {
         .catch((err)=>{
             res.send(err)
         })
-        console.log('Printing the collection')
-        console.log(collection)
         res.send(collection)
     }
     else{

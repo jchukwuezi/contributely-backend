@@ -11,10 +11,8 @@ router.get("/collection", async (req, res)=> {
     if (sessDonor){
         const collection = await Donor.findById(req.session.donor.id).populate("collection")
         .catch((err)=>{
-            res.send(err)
+            res.send({"closingError": err})
         })
-        console.log('Printing the collection')
-        console.log(collection)
         res.send(collection)
     }
     else{
