@@ -15,7 +15,7 @@ router.get("/collection", async (req, res)=> {
         })
         console.log('Printing the collection')
         console.log(collection)
-        res.send(collection.causeCollection)
+        res.send(collection)
     }
     else{
         console.log("No user was found.")
@@ -27,8 +27,7 @@ router.get("/collection/:causeId", async (req, res)=>{
     const sessDonor = req.session.donor;
     const causeId = req.params.causeId;
     if(sessDonor){
-        const onlineCause = await OnlineCause.findById(causeId)
-        console.log(onlineCause)
+        const onlineCause = OnlineCause.findById(causeId)
         res.send(onlineCause)
     }
     else{

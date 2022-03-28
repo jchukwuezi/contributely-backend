@@ -27,7 +27,7 @@ router.get("/collection/:causeId", async (req, res)=>{
     const sessDonor = req.session.donor;
     const causeId = req.params.causeId;
     if(sessDonor){
-        const onlineCause = await OnlineCause.findById(causeId)
+        const onlineCause = OnlineCause.findById(causeId)
         console.log(onlineCause)
         res.send(onlineCause)
     }

@@ -9,13 +9,13 @@ const OnlineCause = require('../../models/OnlineCause')
 router.get("/collection", async (req, res)=> {
     const sessDonor = req.session.donor;
     if (sessDonor){
-        const collection = await Donor.findById(req.session.donor.id).populate("causeCollection")
+        const collection = await Donor.findById(req.session.donor.id).populate("collection")
         .catch((err)=>{
             res.send(err)
         })
         console.log('Printing the collection')
         console.log(collection)
-        res.send(collection.causeCollection)
+        res.send(collection)
     }
     else{
         console.log("No user was found.")
@@ -27,8 +27,7 @@ router.get("/collection/:causeId", async (req, res)=>{
     const sessDonor = req.session.donor;
     const causeId = req.params.causeId;
     if(sessDonor){
-        const onlineCause = await OnlineCause.findById(causeId)
-        console.log(onlineCause)
+        const onlineCause = OnlineCause.findById(causeId)
         res.send(onlineCause)
     }
     else{
@@ -147,35 +146,8 @@ router.post("/collection/add/gfm", async (req, res)=>{
 })
 
 //deleting a cause to a collection
-router.delete("/collection/remove/:causeId", async (req, res)=> {
-    const sessDonor = req.session.donor;
-    const causeId = req.params.causeId;
-    if (sessDonor){
-        Donor.findOneAndUpdate({_id: req.session.donor.id}, {
-            $pull:{
-                'causeCollection': causeId
-            }
-        }, (err, model)=>{
-            if(!err){
-                OnlineCause.findByIdAndRemove({_id: causeId}, (err)=>{
-                    if(err){
-                        res.send(err)
-                    } 
-                    else{
-                        res.send('Successfully removed cause from collection')
-                    }
-                })
-            }
-            else{
-                res.status(500).send(err)
-            }
-        })
-    }
+router.delete("/collection/remove/:id", (req, res)=> {
 
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
 })
 
 
