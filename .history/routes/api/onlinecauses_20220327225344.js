@@ -75,8 +75,7 @@ router.post("/collection/add/gg-country", async (req, res)=> {
             url: url,
             description: impact,
             categories: themes,
-            goalAmount: goalNum,
-            savedBy: await Donor.findById(req.session.donor.id).select({_id:1})
+            goalAmount: goalNum
         })
         await newCause.save()
         await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {causeCollection: newCause._id}})
@@ -97,8 +96,6 @@ router.post("/collection/add/gfm", async (req, res)=>{
     const sessDonor = req.session.donor;
     const {title, url, categories, goal} = req.body;
     if (sessDonor){
-        const goalString = goal.replace('€', '')
-        const goalNum = parseFloat(goalString)
         Donor.findById(req.session.donor.id).then(async (donor)=>{
             if(!donor){
                 console.log("No user was found.")
@@ -106,6 +103,7 @@ router.post("/collection/add/gfm", async (req, res)=>{
             }
 
             else{
+                const goalNum = parseFloat(goal)
                 const newCause = new OnlineCause({
                     title: title,
                     url: url,

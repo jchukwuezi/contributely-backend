@@ -106,6 +106,7 @@ router.post("/collection/add/gfm", async (req, res)=>{
             }
 
             else{
+                const goalNum = parseFloat(goal)
                 const newCause = new OnlineCause({
                     title: title,
                     url: url,

@@ -51,7 +51,7 @@ router.post("/collection/add/gg-interest", async (req, res)=> {
             savedBy: await Donor.findById(req.session.donor.id).select({_id:1})
         })
         await newCause.save()
-        await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {causeCollection: newCause._id}})
+        await Donor.findByIdAndUpdate(req.session.donor.id, {$push: newCause._id})
         .catch((err)=>{
             res.send({"collectionError": err})
         })
@@ -75,11 +75,10 @@ router.post("/collection/add/gg-country", async (req, res)=> {
             url: url,
             description: impact,
             categories: themes,
-            goalAmount: goalNum,
-            savedBy: await Donor.findById(req.session.donor.id).select({_id:1})
+            goalAmount: goalNum
         })
         await newCause.save()
-        await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {causeCollection: newCause._id}})
+        await Donor.findByIdAndUpdate(req.session.donor.id, {$push: newCause._id})
         .catch((err)=>{
             res.send({"collectionError": err})
         })
@@ -95,34 +94,8 @@ router.post("/collection/add/gg-country", async (req, res)=> {
 //go fund me cause
 router.post("/collection/add/gfm", async (req, res)=>{
     const sessDonor = req.session.donor;
-    const {title, url, categories, goal} = req.body;
     if (sessDonor){
-        const goalString = goal.replace('€', '')
-        const goalNum = parseFloat(goalString)
-        Donor.findById(req.session.donor.id).then(async (donor)=>{
-            if(!donor){
-                console.log("No user was found.")
-                res.status(401).send('Unauthorized')
-            }
-
-            else{
-                const newCause = new OnlineCause({
-                    title: title,
-                    url: url,
-                    categories: categories,
-                    goalAmount: goalNum,
-                    savedBy: donor._id
-                })
-                await newCause.save()
-                await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {causeCollection: newCause._id}})
-                .catch((err)=>{
-                    res.send({"collectionError": err})
-                })
-                res.send(`You have successfully added ${newCause.title} to your collection`)
-            }
-        })
-        
-        /*
+        const {title, url, categories, goal} = req.body;
         const goalNum = parseFloat(goal)
         const newCause = new OnlineCause({
             title: title,
@@ -136,7 +109,6 @@ router.post("/collection/add/gfm", async (req, res)=>{
             res.send({"collectionError": err})
         })
         res.send(`You have successfully added ${newCause.title} to your collection`)
-        */
     }
 
     else{

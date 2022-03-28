@@ -97,8 +97,6 @@ router.post("/collection/add/gfm", async (req, res)=>{
     const sessDonor = req.session.donor;
     const {title, url, categories, goal} = req.body;
     if (sessDonor){
-        const goalString = goal.replace('€', '')
-        const goalNum = parseFloat(goalString)
         Donor.findById(req.session.donor.id).then(async (donor)=>{
             if(!donor){
                 console.log("No user was found.")
@@ -106,6 +104,7 @@ router.post("/collection/add/gfm", async (req, res)=>{
             }
 
             else{
+                const goalNum = parseFloat(goal)
                 const newCause = new OnlineCause({
                     title: title,
                     url: url,
