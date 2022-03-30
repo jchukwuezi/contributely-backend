@@ -207,6 +207,7 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
         const donation = {
             amount: amount,
             email: email,
+            date: Date.now
         }
         const paymentIntent = await stripe.paymentIntents.create({
             payment_method_types: ['card'],

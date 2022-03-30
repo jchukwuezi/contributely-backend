@@ -133,7 +133,7 @@ router.post("/activate-stripe", async (req, res) => {
     //const id = req.params.orgId;
     const stripeStatus = await Organisation.findById(req.session.org.id).select({_id:0, stripeActivationStatus:1})
     console.log(stripeStatus)
-    if (stripeStatus) {
+    if (stripeStatus === false) {
         await Organisation.findByIdAndUpdate(req.session.org.id, {stripeActivationStatus: true})
         .catch((err)=>{
             res.status(404).send(err)

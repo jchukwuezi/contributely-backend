@@ -133,6 +133,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             const donation = {
                 amount: amount,
                 email: userEmail,
+                date: Date.now
             }
 
             const transaction = {
@@ -186,19 +187,17 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
 
 router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
     const groupCode = req.params.groupCode
-    console.log(groupCode)
     const initiativeId = req.params.initiativeId
     //finding the group and initiative name for metadata section
     const orgStripeId = await Organisation.findOne({groupCode:groupCode}).select({_id:0, stripeAccountId:1})
     const groupName = await Organisation.findOne({groupCode:groupCode}).select({_id:0, name:1})
-    console.log(orgStripeId, groupName)
     const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
     const {onBehalfOf, amount, email} = req.body;
     try{
         amountInCent = amount * 100;
         const paymentInfo = {
             initiativeName: initiativeName.title,
-            groupName: groupName.name,
+            groupName: groupName,
             inTheNameOf: onBehalfOf,
             amount: amount,
             email: email
@@ -207,18 +206,19 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
         const donation = {
             amount: amount,
             email: email,
+            date: Date.now
         }
         const paymentIntent = await stripe.paymentIntents.create({
             payment_method_types: ['card'],
             amount: amountInCent,
             currency: 'eur',
-            on_behalf_of: orgStripeId.stripeAccountId,
+            on_behalf_of: orgStripeId,
             transfer_data:{
-                destination: orgStripeId.stripeAccountId
+                destination: orgStripeId
             },
             metadata:{
-                initiativeName: initiativeName.title,
-                groupName: groupName.name,
+                initiativeName: initiativeName,
+                groupName: groupName,
                 inTheNameOf: onBehalfOf,
                 amount: amount,
                 email: email
