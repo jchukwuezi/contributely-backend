@@ -35,8 +35,6 @@ router.post("/add", (req, res) => {
                     $push: {initiativeList: newInitiative._id}
                 });
 
-                //an email to update members that are part of the email list
-
                 res.status(200).send({successful: 'Initiative successfully created'})
             }
         })
@@ -113,7 +111,6 @@ router.post("/close/:initiativeId", async(req, res)=>{
             })
 
         return res.send('Initiative closed successfully')
-        //an email will be sent to update the members of this group
     }
 
     else{
