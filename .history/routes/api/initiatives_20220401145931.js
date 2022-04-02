@@ -104,10 +104,7 @@ router.patch("/update-balance/:initiativeId", async (req, res) => {
 
 router.get("/balance/:initiativeId", async (req, res)=>{
     const initiativeId = req.params.initiativeId
-    const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
-    const history = donations.donationHistory
-    const balance = history.reduce((n, {amount}) => n + amount, 0)
-    res.send(balance)
+    
 })
 
 //route to close an initiative
