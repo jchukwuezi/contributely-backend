@@ -293,9 +293,7 @@ router.get("/subscriptions", async(req, res)=>{
 router.get("/categories", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessOrg){
-        //find all of the categories, lowercase them and add them to a list
-        //find the occurrences of each category and put it in an map (array of object)
-        //put it into the piechart on client side  
+
     }
 
     else{

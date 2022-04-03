@@ -167,5 +167,72 @@ router.get("/:title", (req, res) => {
 })
 
 
+router.get("/available-balance", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const stripeId = await Organisation.findById(req.session.org.id).select({_id:0, stripeAccountId:1})
+        const accountBalance = await stripe.balance.retrieve({
+            stripeAccount: stripeId
+        })
+        .catch((err)=>{
+            res.send(err)
+        })
+        const trueBalance = accountBalance.available.reduce((n, {amount})=> n+amount, 0)
+        console.log(trueBalance)
+        res.send(trueBalance)
+    }   
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+router.get("/pending-balance", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/contribution-total", async (req, res) =>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/categories", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/subscribers", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
 
 module.exports = router;
