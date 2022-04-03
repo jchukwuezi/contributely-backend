@@ -271,40 +271,6 @@ router.get("/no-of-contributions", async(req, res)=>{
         const contributionNum = transactions.transactions.length
         res.send({"count": contributionNum})
     }
-
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.get("/amount-contributed", async(req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        const donations = await Donor.findById(req.session.donor.id).select({_id:0, transactions:1})
-        .catch((err)=>{
-            res.send(err)
-        })
-        const amount = dontations.transactions.reduce((n, {amount}) => n + amount, 0)
-        res.send({"amount": amount})
-    }
-    
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.get("/collection-no", async(req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        const transactions = await Donor.findById(req.session.donor.id).populate("transactions")
-        .catch((err)=>{
-            res.send(err)
-        })
-        const contributionNum = transactions.transactions.length
-        res.send({"count": contributionNum})
-    }
     
     else{
         console.log("No user was found.")

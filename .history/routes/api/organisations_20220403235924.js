@@ -232,7 +232,7 @@ router.get("/contribution-total", async (req, res) =>{
         console.log(totals)
         const contributionTotal = totals.reduce((a, b) => a + b, 0)
         console.log(contributionTotal)
-        res.send({"amount": contributionTotal})
+        res.send(contributionTotal)
     }
 
     else{
@@ -301,7 +301,7 @@ router.get("/contribution-count", async (req, res)=>{
         })
         const totalDonationNo = donationNos.reduce((a, b) => a + b, 0)
         console.log(totalDonationNo)
-        res.send({"count": totalDonationNo})
+        res.send({"amount": totalDonationNo})
         //console.log(activeInitiatives.length())
         //res.send(activeInitiatives.length())
     }

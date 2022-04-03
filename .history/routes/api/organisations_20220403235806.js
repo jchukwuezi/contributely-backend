@@ -232,7 +232,7 @@ router.get("/contribution-total", async (req, res) =>{
         console.log(totals)
         const contributionTotal = totals.reduce((a, b) => a + b, 0)
         console.log(contributionTotal)
-        res.send({"amount": contributionTotal})
+        res.send(contributionTotal)
     }
 
     else{

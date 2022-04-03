@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router();
 const Organisation = require('../../models/Organisation')
-const Initiative = require('../../models/Initiative')
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 const randomstring = require('randomstring')
@@ -183,14 +182,14 @@ router.get("/available-balance", async (req, res)=>{
     if (sessOrg){
         const stripeId = await Organisation.findById(req.session.org.id).select({_id:0, stripeAccountId:1})
         const accountBalance = await stripe.balance.retrieve({
-            stripeAccount: stripeId.stripeAccountId
+            stripeAccount: stripeId
         })
         .catch((err)=>{
             res.send(err)
         })
         const trueBalance = accountBalance.available.reduce((n, {amount})=> n+amount, 0)
-        console.log(trueBalance/100)
-        res.send({"trueBalance": trueBalance/100})
+        console.log(trueBalance)
+        res.send(trueBalance)
     }   
 
     else{
@@ -203,14 +202,14 @@ router.get("/pending-balance", async (req, res)=>{
     if (sessOrg){
         const stripeId = await Organisation.findById(req.session.org.id).select({_id:0, stripeAccountId:1})
         const accountBalance = await stripe.balance.retrieve({
-            stripeAccount: stripeId.stripeAccountId
+            stripeAccount: stripeId
         })
         .catch((err)=>{
             res.send(err)
         })
         const pendingBalance = accountBalance.pending.reduce((n, {amount})=> n+amount, 0)
-        console.log(pendingBalance/100)
-        res.send({"pendingBalance" : pendingBalance/100})
+        console.log(pendingBalance)
+        res.send(pendingBalance)
     }
 
     else{
@@ -232,7 +231,7 @@ router.get("/contribution-total", async (req, res) =>{
         console.log(totals)
         const contributionTotal = totals.reduce((a, b) => a + b, 0)
         console.log(contributionTotal)
-        res.send({"amount": contributionTotal})
+        res.send(contributionTotal)
     }
 
     else{
@@ -276,8 +275,8 @@ router.get("/initiative-count", async (req, res)=>{
         .catch((err)=>{
             res.send(err)
         })
-        console.log(activeInitiatives.length)
-        res.send({"count": activeInitiatives.length})
+        console.log(activeInitiatives.length())
+        res.send(activeInitiatives.length())
     }
     
     else{
@@ -294,16 +293,8 @@ router.get("/contribution-count", async (req, res)=>{
         .catch((err)=>{
             res.send(err)
         })
-        let donationNos = []
-        activeInitiatives.forEach((initiative)=>{
-            const history = initiative.donationHistory.length
-            donationNos.push(history)
-        })
-        const totalDonationNo = donationNos.reduce((a, b) => a + b, 0)
-        console.log(totalDonationNo)
-        res.send({"count": totalDonationNo})
-        //console.log(activeInitiatives.length())
-        //res.send(activeInitiatives.length())
+        console.log(activeInitiatives.length())
+        res.send(activeInitiatives.length())
     }
     
     else{
