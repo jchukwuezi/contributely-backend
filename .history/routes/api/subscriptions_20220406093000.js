@@ -6,8 +6,8 @@ router.get("/donor/get", (req, res) =>{
 
 })
 
-router.get("/org/get", async (req, res)=>{
-    const prices = await stripe.prices.list()
+router.get("/org/get", (req, res)=>{
+    const prices = stripe.prices.list()
     const subscriptions = prices.data;
     console.log(subscriptions)
     res.send(subscriptions)
