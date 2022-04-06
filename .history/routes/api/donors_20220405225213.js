@@ -34,13 +34,9 @@ router.post("/register", (req, res) => {
     
             //hashing the password
             bcrypt.genSalt((err, salt) => 
-                bcrypt.hash(newDonor.password, salt, async (err, hash) => {
+                bcrypt.hash(newDonor.password, salt, (err, hash) => {
                     if(err) throw err;
                     newDonor.password = hash;
-                    const customer = await stripe.customers.create({
-                        email: newDonor.email
-                    })
-                    newDonor.stripeCustomerId = customer.id
                     //save new donor
                     newDonor.save()
                     .then(() => {

@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
 const bcrypt = require('bcryptjs')
-const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry} = require('../../services/globalgiving')
 
 //putting donor in an api folder to isolate its
@@ -34,13 +33,9 @@ router.post("/register", (req, res) => {
     
             //hashing the password
             bcrypt.genSalt((err, salt) => 
-                bcrypt.hash(newDonor.password, salt, async (err, hash) => {
+                bcrypt.hash(newDonor.password, salt, (err, hash) => {
                     if(err) throw err;
                     newDonor.password = hash;
-                    const customer = await stripe.customers.create({
-                        email: newDonor.email
-                    })
-                    newDonor.stripeCustomerId = customer.id
                     //save new donor
                     newDonor.save()
                     .then(() => {

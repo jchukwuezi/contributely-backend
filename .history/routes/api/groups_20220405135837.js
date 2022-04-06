@@ -168,7 +168,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             .catch((err)=>{
                 console.error(err)
             })
-            await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {transactions: transaction}})
+            await Donor.findByIdAndUpdate(req.session.donor, {$push: {transactions: transaction}})
             .catch((err)=>{
                 console.error(err)
             })

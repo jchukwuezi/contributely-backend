@@ -28,8 +28,6 @@ const Groups = require('./routes/api/groups')
 const GoFundMeCauses = require('./routes/api/gofundmecauses')
 //declaring crowdfunder route
 const CrowdfunderCauses = require('./routes/api/crowdfundercauses')
-//declaring subscriptions route
-const Subscriptions = require('./routes/api/subscriptions')
 
 
 
@@ -73,7 +71,6 @@ app.use("/api/onlinecauses", OnlineCauses)
 app.use("/api/groups", Groups)
 app.use("/api/gofundme", GoFundMeCauses)
 app.use("/api/crowdfunder", CrowdfunderCauses)
-app.use("/api/subscriptions", Subscriptions)
 
 app.listen(4000, ()=>{
     console.log('Server has started')

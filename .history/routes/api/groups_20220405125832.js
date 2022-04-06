@@ -90,7 +90,6 @@ router.get("/:groupId/initiatives/:initiativeId", async (req, res) => {
     const groupId = req.params.groupId
     const initiativeId = req.params.initiativeId
     const sessDonor = req.session.donor;
-    console.log("This is the donor in the session wanting to make a donation")
     console.log(req.session.donor)
 
     if(sessDonor){
@@ -113,9 +112,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
     const groupId = req.params.groupId
     const initiativeId = req.params.initiativeId
     const sessDonor = req.session.donor;
-    console.log("Printing out session data")
     console.log(req.session.donor)
-    console.log(req.session)
 
     if(sessDonor){
         //finding the group and initiative name for metadata section
@@ -132,12 +129,12 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
                 groupName: groupName.name,
                 inTheNameOf: onBehalfOf,
                 amount: amount,
-                email: userEmail.email
+                email: userEmail
             }
             //to add to donation history of initiative
             const donation = {
                 amount: amount,
-                email: userEmail.email,
+                email: userEmail,
             }
 
             const transaction = {
@@ -159,7 +156,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
                     groupName: groupName.name,
                     inTheNameOf: onBehalfOf,
                     amount: amount,
-                    email: userEmail.email
+                    email: userEmail
                 }
             })
             await Initiative.findById(initiativeId).update({
@@ -168,7 +165,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             .catch((err)=>{
                 console.error(err)
             })
-            await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {transactions: transaction}})
+            await Donor.findByIdAndUpdate(req.session.donor, {$push: {transactions: transaction}})
             .catch((err)=>{
                 console.error(err)
             })

@@ -137,7 +137,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             //to add to donation history of initiative
             const donation = {
                 amount: amount,
-                email: userEmail.email,
+                email: userEmail,
             }
 
             const transaction = {
@@ -159,7 +159,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
                     groupName: groupName.name,
                     inTheNameOf: onBehalfOf,
                     amount: amount,
-                    email: userEmail.email
+                    email: userEmail
                 }
             })
             await Initiative.findById(initiativeId).update({
@@ -168,7 +168,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             .catch((err)=>{
                 console.error(err)
             })
-            await Donor.findByIdAndUpdate(req.session.donor.id, {$push: {transactions: transaction}})
+            await Donor.findByIdAndUpdate(req.session.donor, {$push: {transactions: transaction}})
             .catch((err)=>{
                 console.error(err)
             })
