@@ -81,6 +81,7 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
         await Donor.findByIdAndUpdate(req.session.donor.id, {
             $push:{subscriptions: newSubscription._id}
         })
+
         const status = subscription['latest_invoice']['payment_intent']['status'] 
         const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
         console.log(status)

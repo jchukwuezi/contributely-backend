@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const Organisation = require('../../models/Organisation')
 const Donor = require('../../models/Donor')
-const Subscription = require('../../models/Subscription')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
 router.get("/donor/get", async (req, res) =>{
@@ -34,53 +33,32 @@ router.post("/donor/end/:id", (req, res)=>{
 router.post("/donor/subscribe/:groupId", async (req, res)=>{
     const groupId = req.params.groupId;
     const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
-    const org = await Organisation.findById(groupId).select({_id: 1})
-    const donor = await Donor.findById(req.session.donor.id).select({_id: 1})
     const sessDonor = req.session.donor;
-    let payment_method = ""
     console.log(req.body.payment_method)
     if(sessDonor){
         const customerId = await Donor.findById(req.session.donor.id).select({_id:0, stripeCustomerId:1})
-        //looking if the donor already has a stripePaymentMethodId on their account
-        const stripePaymentMethodId = await Donor.findById(req.session.donor.id).select({_id:0, stripePaymentMethodId:1})
-        //if they don't have one, one will be created
-        if(!stripePaymentMethodId){
-            const attachedPayment =  await stripe.paymentMethods.attach(
-                req.body.payment_method,
-                {customer: customerId.stripeCustomerId}
-            )
-            await Donor.findByIdAndUpdate(req.session.donor.id, {stripePaymentMethodId: attachedPayment.id})
-            const updatedMethodId = await Donor.findById(req.session.donor.id).select({_id:0, stripePaymentMethodId:1})
-            payment_method = updatedMethodId.stripePaymentMethodId;
-        }
-        payment_method = stripePaymentMethodId.stripePaymentMethodId
+        console.log()
+
+        const attachedPayment =  await stripe.paymentMethods.attach(
+            req.body.payment_method,
+            {customer: customerId.stripeCustomerId}
+        )
+
         const subscription = await stripe.subscriptions.create({
-            customer: customerId.stripeCustomerId,
+            //customer: customerId.stripeCustomerId,
+            customer: "cus_LSEvqWBSqPMu9s",
             items: [
                 {
                     price: req.body.priceId
                 },
             ],
-            default_payment_method: payment_method,
+            default_payment_method: attachedPayment.id,
             expand:["latest_invoice.payment_intent"],
             transfer_data : {
                 destination: orgStripeId.stripeAccountId
             }
         })
 
-        const amountInEuro = req.body.unit_amount/100
-        //creating new subscription 
-        const newSubscription = new Subscription({
-            amount: amountInEuro,
-            interval: req.body.interval,
-            stripeSubscriptionId: subscription.id,
-            donor: donor._id,
-            organisation: org._id
-        })
-        await newSubscription.save()
-        await Donor.findByIdAndUpdate(req.session.donor.id, {
-            $push:{subscriptions: newSubscription._id}
-        })
         const status = subscription['latest_invoice']['payment_intent']['status'] 
         const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
         console.log(status)
