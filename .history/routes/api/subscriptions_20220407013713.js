@@ -1,7 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const Organisation = require('../../models/Organisation')
-const Donor = require('../../models/Donor')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
 router.get("/donor/get", (req, res) =>{
@@ -35,26 +33,7 @@ router.post("/donor/create/:groupId", async (req, res)=>{
     const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
     const sessDonor = req.session.donor;
     if(sessDonor){
-        const customerId = await Donor.findById(req.session.donor.id).select({_id:0, stripeCustomerId:1})
-        const subscription = await stripe.subscriptions.create({
-            customer: customerId.stripeCustomerId,
-            items: [
-                {
-                    price: req.body.priceId
-                },
-            ],
-            default_payment_method: req.body.payment_method,
-            expand:["latest_invoice.payment_intent"],
-            transfer_data : {
-                destination: orgStripeId.stripeAccountId
-            }
-        })
-
-        const status = subscription['latest_invoice']['payment_intent']['status'] 
-        const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
-        console.log(status)
-        console.log(client_secret)
-        res.send({'client_secret': client_secret, 'status': status});
+        
     }
     else{
         console.log("No user was found. This is funny because it works on post man")

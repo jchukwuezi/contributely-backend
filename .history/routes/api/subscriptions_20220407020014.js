@@ -43,7 +43,6 @@ router.post("/donor/create/:groupId", async (req, res)=>{
                     price: req.body.priceId
                 },
             ],
-            default_payment_method: req.body.payment_method,
             expand:["latest_invoice.payment_intent"],
             transfer_data : {
                 destination: orgStripeId.stripeAccountId
