@@ -62,79 +62,9 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
                 payment_method = updatedMethodId.stripePaymentMethodId;
                 console.log("this is the payment method")
                 console.log(payment_method)
-                const subscription = await stripe.subscriptions.create({
-                    customer: customerId.stripeCustomerId,
-                    items: [
-                        {
-                            price: req.body.priceId
-                        },
-                    ],
-                    default_payment_method: payment_method,
-                    expand:["latest_invoice.payment_intent"],
-                    transfer_data : {
-                        destination: orgStripeId.stripeAccountId
-                    }
-                })
-        
-                const amountInEuro = req.body.unit_amount/100
-                //creating new subscription 
-                const newSubscription = new Subscription({
-                    amount: amountInEuro,
-                    interval: req.body.interval,
-                    stripeSubscriptionId: subscription.id,
-                    donor: donor._id,
-                    organisation: org._id
-                })
-                await newSubscription.save()
-                await Donor.findByIdAndUpdate(req.session.donor.id, {
-                    $push:{subscriptions: newSubscription._id}
-                })
-                const status = subscription['latest_invoice']['payment_intent']['status'] 
-                const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
-                console.log(status)
-                console.log(client_secret)
-                res.json({
-                    client_secret: client_secret, 
-                    status: status
-                })
             }
             else{
                 payment_method = donor.stripePaymentMethodId
-                const subscription = await stripe.subscriptions.create({
-                    customer: customerId.stripeCustomerId,
-                    items: [
-                        {
-                            price: req.body.priceId
-                        },
-                    ],
-                    default_payment_method: payment_method,
-                    expand:["latest_invoice.payment_intent"],
-                    transfer_data : {
-                        destination: orgStripeId.stripeAccountId
-                    }
-                })
-
-                const amountInEuro = req.body.unit_amount/100
-                //creating new subscription 
-                const newSubscription = new Subscription({
-                    amount: amountInEuro,
-                    interval: req.body.interval,
-                    stripeSubscriptionId: subscription.id,
-                    donor: donor._id,
-                    organisation: org._id
-                })
-                await newSubscription.save()
-                await Donor.findByIdAndUpdate(req.session.donor.id, {
-                    $push:{subscriptions: newSubscription._id}
-                })
-                const status = subscription['latest_invoice']['payment_intent']['status'] 
-                const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
-                console.log(status)
-                console.log(client_secret)
-                res.json({
-                    client_secret: client_secret, 
-                    status: status
-                })
             }
         })
         /*
@@ -157,6 +87,41 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
         console.log(payment_method)
         */
         //const customerId = await Donor.findById(req.session.donor.id).select({_id:0, stripeCustomerId:1})
+        const subscription = await stripe.subscriptions.create({
+            customer: customerId.stripeCustomerId,
+            items: [
+                {
+                    price: req.body.priceId
+                },
+            ],
+            default_payment_method: payment_method,
+            expand:["latest_invoice.payment_intent"],
+            transfer_data : {
+                destination: orgStripeId.stripeAccountId
+            }
+        })
+
+        const amountInEuro = req.body.unit_amount/100
+        //creating new subscription 
+        const newSubscription = new Subscription({
+            amount: amountInEuro,
+            interval: req.body.interval,
+            stripeSubscriptionId: subscription.id,
+            donor: donor._id,
+            organisation: org._id
+        })
+        await newSubscription.save()
+        await Donor.findByIdAndUpdate(req.session.donor.id, {
+            $push:{subscriptions: newSubscription._id}
+        })
+        const status = subscription['latest_invoice']['payment_intent']['status'] 
+        const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
+        console.log(status)
+        console.log(client_secret)
+        res.json({
+            client_secret: client_secret, 
+            status: status
+        })
     }
     else{
         console.log("No user was found. This is funny because it works on post man")
