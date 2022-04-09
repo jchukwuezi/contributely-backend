@@ -22,18 +22,8 @@ router.get("/org/get", async (req, res)=>{
 router.get("/donor/all", async(req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
-        const subs = await Subscription.find({})
+        const subs = Subscription.find({})
         .where('donor').equals(req.session.donor.id)
-        .catch((err)=>{
-            res.send(err)
-        })
-        const subCount = subs.length;
-        console.log(subs)
-        //res.send(subs)
-        res.json({
-            "subs": subs,
-            "count": subCount
-        })
     }
     else{
         console.log("No user was found. This is funny because it works on post man")

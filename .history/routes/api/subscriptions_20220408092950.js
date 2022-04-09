@@ -32,7 +32,7 @@ router.get("/donor/all", async(req, res)=>{
         //res.send(subs)
         res.json({
             "subs": subs,
-            "count": subCount
+            "count": subsCount
         })
     }
     else{

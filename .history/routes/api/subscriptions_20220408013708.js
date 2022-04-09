@@ -19,28 +19,6 @@ router.get("/org/get", async (req, res)=>{
     res.send(subscriptions)
 })
 
-router.get("/donor/all", async(req, res)=>{
-    const sessDonor = req.session.donor;
-    if(sessDonor){
-        const subs = await Subscription.find({})
-        .where('donor').equals(req.session.donor.id)
-        .catch((err)=>{
-            res.send(err)
-        })
-        const subCount = subs.length;
-        console.log(subs)
-        //res.send(subs)
-        res.json({
-            "subs": subs,
-            "count": subCount
-        })
-    }
-    else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
-    }
-})
-
 router.get("/org/desc/:id", async (req, res)=>{
     const productId = req.params.id;
     const product = await stripe.products.retrieve(productId)
@@ -160,7 +138,7 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
             }
         })
     }
-
+    
     else{
         console.log("No user was found. This is funny because it works on post man")
         res.status(401).send('Unauthorized')
