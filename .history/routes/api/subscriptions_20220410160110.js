@@ -144,13 +144,13 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
                 await Donor.findByIdAndUpdate(req.session.donor.id, {
                     $push:{subscriptions: newSubscription._id}
                 })
-                const subStatus = subscription['latest_invoice']['payment_intent']['status'] 
+                const status = subscription['latest_invoice']['payment_intent']['status'] 
                 const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
-                console.log(subStatus)
+                console.log(status)
                 console.log(client_secret)
                 res.json({
                     client_secret: client_secret, 
-                    subStatus: subStatus
+                    status: status
                 })
             }
             else{

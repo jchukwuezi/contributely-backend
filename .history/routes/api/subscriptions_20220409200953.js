@@ -48,14 +48,14 @@ router.get("/org/all", async (req, res)=>{
         .where('organisation').equals(req.session.org.id)
         .populate(
             {
-                path: 'donor',
+                path: 'Donor',
                 select: 'name'
             }
         )
         console.log(subs)
-        res.send({subs: subs})
+        res.send(subs)
     }
-
+    
     else{
         console.log("No user was found. This is funny because it works on post man")
         res.status(401).send('Unauthorized')
@@ -76,9 +76,9 @@ router.post("/donor/end/:id", (req, res)=>{
 
 router.post("/donor/subscribe/:groupId", async (req, res)=>{
     const groupId = req.params.groupId;
-    const amountInEuro = req.body.unit_amount/100
     const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
     const org = await Organisation.findById(groupId).select({_id: 1})
+    const donor = await Donor.findById(req.session.donor.id).select({_id: 1})
     const sessDonor = req.session.donor;
     let payment_method = ""
     console.log(req.body.payment_method)
@@ -90,19 +90,6 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
         console.log(stripePaymentMethodId)
 
         Donor.findById(req.session.donor.id, 'stripePaymentMethodId').then(async (donor)=>{
-            const existingSub = await Subscription.find({})
-            .where('donor').equals(req.session.donor.id)
-            .where('amount').equals(amountInEuro)
-            .where('interval').equals(req.body.interval)
-            .where('organisation').equals(groupId)
-            .catch((err)=>{
-                res.send({"existingError": err})
-            })
-
-            if (existingSub.length > 0){
-                return res.status(409).send(`You already have a ${req.body.nickname} subscription of set up with this organisation, click subscriptions in the navigation bar to see this information`)
-            }
-
             if(!donor.stripePaymentMethodId){
                 const attachedPayment =  await stripe.paymentMethods.attach(
                     req.body.payment_method,
@@ -132,6 +119,7 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
                     }
                 })
         
+                const amountInEuro = req.body.unit_amount/100
                 //creating new subscription 
                 const newSubscription = new Subscription({
                     amount: amountInEuro,
@@ -144,13 +132,13 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
                 await Donor.findByIdAndUpdate(req.session.donor.id, {
                     $push:{subscriptions: newSubscription._id}
                 })
-                const subStatus = subscription['latest_invoice']['payment_intent']['status'] 
+                const status = subscription['latest_invoice']['payment_intent']['status'] 
                 const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
-                console.log(subStatus)
+                console.log(status)
                 console.log(client_secret)
                 res.json({
                     client_secret: client_secret, 
-                    subStatus: subStatus
+                    status: status
                 })
             }
             else{
