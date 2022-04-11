@@ -141,9 +141,9 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             }
 
             const transaction = {
-                amount: amount,
-                groupName: groupName.name,
-                initiativeTags: initiativeTags.tags
+                amount: donation.amount,
+                groupName: groupName,
+                initiativeTags: initiativeTags
             }
 
             const paymentIntent = await stripe.paymentIntents.create({
@@ -168,17 +168,12 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             .catch((err)=>{
                 console.error(err)
             })
-
-            console.log(transaction)
-
-           const update = await Donor.findById(req.session.donor.id).update({
+            await Donor.findById(req.session.donor.id).update({
                 $push: {transactions: transaction}
             })
             .catch((err)=>{
                 console.error(err)
             })
-            console.log(update)
-
             console.log(paymentIntent.client_secret)
             res.json({
                 clientSecret: paymentIntent.client_secret,

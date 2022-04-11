@@ -142,8 +142,8 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
 
             const transaction = {
                 amount: amount,
-                groupName: groupName.name,
-                initiativeTags: initiativeTags.tags
+                groupName: groupName,
+                initiativeTags: initiativeTags
             }
 
             const paymentIntent = await stripe.paymentIntents.create({

@@ -360,13 +360,8 @@ router.get("/categories-donated", async(req, res)=>{
             }
         }
         console.log(count)
-        console.log(Object.keys(count))
-        console.log(Object.values(count))
         //put it into the piechart on client side 
-        res.send({
-            categoryKeys: Object.keys(count),
-            categoryValues: Object.values(count)
-        }) 
+        res.send({categoryData: count}) 
     }
 
     else{

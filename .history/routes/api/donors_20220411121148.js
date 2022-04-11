@@ -332,7 +332,7 @@ router.get("/subscriptions", async(req, res)=>{
 
 router.get("/categories-donated", async(req, res)=>{
     const sessDonor = req.session.donor;
-    if (sessDonor){
+    if (sessOrg){
         let allTags = []
         //find all of the categories, lowercase them and add them to a list
         const transactions = await Donor.findById(req.session.donor.id).populate("transactions")
@@ -341,14 +341,9 @@ router.get("/categories-donated", async(req, res)=>{
         })
 
         for (let i=0; i<transactions.transactions.length; i++){
-           //console.log(transactions.transactions[i].initiativeTags)
-           for (let j =0; j<transactions.transactions[i].initiativeTags.length; j++){
-               allTags.push(transactions.transactions[i].initiativeTags[j])
-           }
-           //allTags.push(transactions.transactions[i].initiativeTags)
+           console.log(transactions.transactions[i].initiativeTags)
+           allTags.push(transactions.transactions[i].initiativeTags)
         }
-
-        console.log(allTags)
         //find the occurrences of each category and put it in an map (array of object)
         const count = {}
         for (const elem of allTags){
@@ -360,13 +355,7 @@ router.get("/categories-donated", async(req, res)=>{
             }
         }
         console.log(count)
-        console.log(Object.keys(count))
-        console.log(Object.values(count))
-        //put it into the piechart on client side 
-        res.send({
-            categoryKeys: Object.keys(count),
-            categoryValues: Object.values(count)
-        }) 
+        //put it into the piechart on client side  
     }
 
     else{

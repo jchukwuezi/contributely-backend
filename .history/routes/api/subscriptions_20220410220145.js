@@ -27,7 +27,7 @@ router.get("/donor/all", async(req, res)=>{
         .populate(
             {
                 path: 'organisation',
-                select: 'name tags description'
+                select: 'name,tags,description'
             }
         )
         .catch((err)=>{
