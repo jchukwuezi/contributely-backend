@@ -400,6 +400,11 @@ router.get("/subs-categories", async(req, res)=>{
             allSubs[i].organisation.tags.forEach(elem => {
                 allTags.push(elem)
             });
+            /*
+            for (let j=0; j<allSubs[i].organisation.tags; j++){
+                allTags.push(allSubs[i].organisation.tags[j])
+            }
+            */
         }
 
         console.log(allTags)

@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
-const Subscription = require("../../models/Subscription")
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry} = require('../../services/globalgiving')
@@ -394,12 +393,10 @@ router.get("/subs-categories", async(req, res)=>{
             res.send(err)
         })
 
-        console.log(allSubs[0].organisation.tags)
-
         for (let i=0; i<allSubs.length; i++){
-            allSubs[i].organisation.tags.forEach(elem => {
-                allTags.push(elem)
-            });
+            for (let j=0; j<allSubs[i].organisation.tags; j++){
+                allTags.push(allSubs[i].organisation.tags[j])
+            }
         }
 
         console.log(allTags)

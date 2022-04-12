@@ -241,19 +241,17 @@ router.get("/contribution-total", async (req, res) =>{
     }
 })
 
-router.get("/initiative-categories", async (req, res)=>{
+router.get("/initiatives-categories", async (req, res)=>{
     const sessOrg = req.session.org;
     if (sessOrg){
         let allTags = []
 
-        const initiatives =  await Initiative.find({})
+        const initatives =  await Initiative.find({})
         .where('organisation').equals(req.session.org.id)
 
-        console.log(initiatives)
-
-        for(let i=0; i<initiatives.length; i++){
+        for(let i=0; i<initatives.length; i++){
             for(let j=0; j<initiatives[i].tags.length; j++){
-                allTags.push(initiatives[i].tags[j])
+                allTags.push(initatives.tags[j])
             }
         }
 

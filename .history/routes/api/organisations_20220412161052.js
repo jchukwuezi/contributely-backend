@@ -249,11 +249,9 @@ router.get("/initiative-categories", async (req, res)=>{
         const initiatives =  await Initiative.find({})
         .where('organisation').equals(req.session.org.id)
 
-        console.log(initiatives)
-
         for(let i=0; i<initiatives.length; i++){
             for(let j=0; j<initiatives[i].tags.length; j++){
-                allTags.push(initiatives[i].tags[j])
+                allTags.push(initiatives.tags[j])
             }
         }
 

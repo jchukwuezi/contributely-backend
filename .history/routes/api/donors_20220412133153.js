@@ -394,12 +394,10 @@ router.get("/subs-categories", async(req, res)=>{
             res.send(err)
         })
 
-        console.log(allSubs[0].organisation.tags)
-
         for (let i=0; i<allSubs.length; i++){
-            allSubs[i].organisation.tags.forEach(elem => {
-                allTags.push(elem)
-            });
+            for (let j=0; j<allSubs[i].organisation.tags; j++){
+                allTags.push(allSubs[i].organisation.tags[j])
+            }
         }
 
         console.log(allTags)

@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const Donor = require("../../models/Donor")
-const Subscription = require("../../models/Subscription")
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry} = require('../../services/globalgiving')
@@ -379,46 +378,8 @@ router.get("/categories-donated", async(req, res)=>{
 router.get("/subs-categories", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessDonor){
-        let allTags = []
 
-        //finding tags for the organisations
-        const allSubs = await Subscription.find({})
-        .where('donor').equals(req.session.donor.id)
-        .populate(
-            {
-                path: 'organisation',
-                select: 'tags'
-            }
-        )
-        .catch((err)=>{
-            res.send(err)
-        })
 
-        console.log(allSubs[0].organisation.tags)
-
-        for (let i=0; i<allSubs.length; i++){
-            allSubs[i].organisation.tags.forEach(elem => {
-                allTags.push(elem)
-            });
-        }
-
-        console.log(allTags)
-        const count = {}
-        for (const elem of allTags){
-            if(count[elem]){
-                count[elem] += 1;
-            }
-            else{
-                count[elem] = 1
-            }
-        }
-        console.log(count)
-        console.log(Object.keys(count))
-        console.log(Object.values(count))
-        res.send({
-            categoryKeys: Object.keys(count),
-            categoryValues: Object.values(count)
-        }) 
     }
 
     else{
