@@ -315,23 +315,8 @@ router.post("/notify-list/unsubscribe/:groupId", async(req, res)=>{
 })
 
 router.get("/notify-list/subs", async (req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-       const subs = await Donor.findById(req.session.donor.id).populate({
-            path: 'groupsNotifiedBy',
-            select: 'name description'
-        })
-        console.log(subs)
-        res.send(subs.groupsNotifiedBy)
-    }
 
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
 })
-
-//router.get()
 
 
 

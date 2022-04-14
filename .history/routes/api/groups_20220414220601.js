@@ -331,7 +331,7 @@ router.get("/notify-list/subs", async (req, res)=>{
     }
 })
 
-//router.get()
+router.get()
 
 
 

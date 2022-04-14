@@ -57,7 +57,7 @@ const OrganisationSchema = new mongoose.Schema({
     },
     
 
-    notificationList: [
+    memberList: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Donor'

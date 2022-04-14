@@ -322,7 +322,6 @@ router.get("/notify-list/subs", async (req, res)=>{
             select: 'name description'
         })
         console.log(subs)
-        res.send(subs.groupsNotifiedBy)
     }
 
     else{
@@ -330,8 +329,6 @@ router.get("/notify-list/subs", async (req, res)=>{
         res.status(401).send('Unauthorized')
     }
 })
-
-//router.get()
 
 
 

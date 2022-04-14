@@ -73,7 +73,7 @@ const DonorSchema = new mongoose.Schema({
         }
     ],
 
-    groupsNotifiedBy: [
+    notifiedBy: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Organisation'

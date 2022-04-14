@@ -255,25 +255,18 @@ router.post("/notify-list/subscribe/:groupId", async(req, res)=>{
     const groupId = req.params.groupId;
     const sessDonor = req.session.donor;
     if (sessDonor){
+
         //adding donor to notification list of that specific group
         await Organisation.findByIdAndUpdate(groupId, {
             $push:{notificationList: req.session.donor.id}
-        })
-        .catch((err)=>{
-            console.log(err)
-            return res.send(err)
         })
 
         //adding organisation to list of groups user will be notified
         await Donor.findByIdAndUpdate(req.session.donor.id, {
             $push:{groupsNotifiedBy: groupId}
         })
-        .catch((err)=>{
-            console.log(err)
-            return res.send(err)
-        })
 
-        res.status(200).send('Notification list join successful')
+        await D
     }
 
     else{
@@ -283,55 +276,13 @@ router.post("/notify-list/subscribe/:groupId", async(req, res)=>{
 })
 
 
-router.post("/notify-list/unsubscribe/:groupId", async(req, res)=>{
-    const groupId = req.params.groupId;
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        //removing organisation to list of groups user will be notified
-        await Donor.findByIdAndUpdate(req.session.donor.id, {
-            $pull:{groupsNotifiedBy: groupId}
-        })
-        .catch((err)=>{
-            console.log(err)
-            return res.send(err)
-        })
-
-        //removing donor to notification list of that specific group
-        await Organisation.findByIdAndUpdate(groupId, {
-            $pull:{notificationList: req.session.donor.id}
-        })
-        .catch((err)=>{
-            console.log(err)
-            return res.send(err)
-        })
-
-        res.status(200).send('Notification list removal successful')
-    }
-
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
+router.post("/notify-list/unsubscribe", async(req, res)=>{
+    
 })
 
 router.get("/notify-list/subs", async (req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-       const subs = await Donor.findById(req.session.donor.id).populate({
-            path: 'groupsNotifiedBy',
-            select: 'name description'
-        })
-        console.log(subs)
-        res.send(subs.groupsNotifiedBy)
-    }
 
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
 })
-
-//router.get()
 
 
 
