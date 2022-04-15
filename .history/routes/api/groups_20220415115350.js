@@ -6,7 +6,6 @@ const Organisation = require('../../models/Organisation')
 const Donor = require('../../models/Donor')
 const groups = []
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
-const mongoose = require('mongoose')
 
 //returning list of organisations on contributely
 //getting the groups that match to a user based on the tags
@@ -336,12 +335,8 @@ router.get("/list-status/:groupId", async(req, res)=>{
     const groupId = req.params.groupId;
     const sessDonor = req.session.donor;
     if (sessDonor){
-        const status = await Donor.exists({groupsNotifiedBy : {$elemMatch: {$eq: groupId}}})
-        .catch((err)=>{
-            console.log(err)
-        })
-        console.log(status)
-        res.send({"memberStatus": status})
+        const groups = await Donor.find({groupId:{$in: groupsNotifiedBy}}) 
+        console.log(groups)
     }
     
     else{

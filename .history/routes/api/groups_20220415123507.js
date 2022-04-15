@@ -336,12 +336,11 @@ router.get("/list-status/:groupId", async(req, res)=>{
     const groupId = req.params.groupId;
     const sessDonor = req.session.donor;
     if (sessDonor){
-        const status = await Donor.exists({groupsNotifiedBy : {$elemMatch: {$eq: groupId}}})
+        const groups = await Donor.exists({groupsNotifiedBy : {$elemMatch: {$eq: groupId}}})
         .catch((err)=>{
             console.log(err)
         })
-        console.log(status)
-        res.send({"memberStatus": status})
+        console.log(groups)
     }
     
     else{
