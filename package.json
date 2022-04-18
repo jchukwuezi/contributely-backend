@@ -40,6 +40,7 @@
     "nodemailer-express-handlebars": "^5.0.0",
     "passport": "^0.5.0",
     "passport-local": "^1.0.0",
+    "puppeteer": "^13.5.2",
     "randomstring": "^1.2.2",
     "stripe": "^8.208.0",
     "uuid": "^8.3.2",
