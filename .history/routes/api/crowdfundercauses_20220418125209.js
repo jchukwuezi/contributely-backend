@@ -8,14 +8,12 @@ const {CrowdfunderCategories} = require('../../data/cause-categories')
 const base_url = 'https://www.crowdfunder.co.uk/search/projects?'
 router.get("/get", (req, res) =>{
     const causeInfo = []
-    console.log(CrowdfunderCategories);
-    const url = CrowdfunderCategories.get("Business");
-    console.log(url);
+    const url = CrowdfunderCategories.get("Business")
     (async ()=>{
         //launching puppeteer browser
         const browser = await puppeteer.launch()
         const page = await browser.newPage()
-        await page.goto(base_url + url)
+        await page.goto(url)
         const pageData = await page.evaluate(()=>{
             return{
                 html: document.documentElement.innerHTML
@@ -53,7 +51,7 @@ router.get("/get", (req, res) =>{
                 "daysLeft": daysLeft,
                 "goalTarget": target,
                 "url": link,
-                "description": articleText.substring(0, 250)
+                "description": articleText
             }
             causeInfo.push(causeObj)
         }

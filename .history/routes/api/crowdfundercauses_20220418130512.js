@@ -15,7 +15,7 @@ router.get("/get", (req, res) =>{
         //launching puppeteer browser
         const browser = await puppeteer.launch()
         const page = await browser.newPage()
-        await page.goto(base_url + url)
+        await page.goto(url)
         const pageData = await page.evaluate(()=>{
             return{
                 html: document.documentElement.innerHTML
@@ -53,7 +53,7 @@ router.get("/get", (req, res) =>{
                 "daysLeft": daysLeft,
                 "goalTarget": target,
                 "url": link,
-                "description": articleText.substring(0, 250)
+                "description": articleText
             }
             causeInfo.push(causeObj)
         }

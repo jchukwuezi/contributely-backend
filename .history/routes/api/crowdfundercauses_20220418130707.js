@@ -53,7 +53,7 @@ router.get("/get", (req, res) =>{
                 "daysLeft": daysLeft,
                 "goalTarget": target,
                 "url": link,
-                "description": articleText.substring(0, 250)
+                "description": articleText
             }
             causeInfo.push(causeObj)
         }
