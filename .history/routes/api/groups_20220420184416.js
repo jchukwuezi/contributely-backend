@@ -230,7 +230,6 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
             const contribution = {
                 amount: amount,
                 groupName: groupName.name,
-                initiativeName: initiativeName.title,
                 onBehalfOf: name,
                 initiativeTags: initiativeTags.tags
             }

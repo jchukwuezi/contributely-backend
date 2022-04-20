@@ -83,13 +83,12 @@ const DonorSchema = new mongoose.Schema({
             onBehalfOf:{
                 type: String
             },
+            email:{
+                type: String
+            },
             groupName:{
                 type: String
             },
-            initiativeName:{
-                type: String
-            },
-            
             initiativeTags:[
 
             ]
