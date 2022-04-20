@@ -202,6 +202,9 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
     const groupId = req.params.groupId
     const initiativeId = req.params.initiativeId
     const sessDonor = req.session.donor;
+    console.log("Printing out session data")
+    console.log(req.session.donor)
+    console.log(req.session)
 
     if(sessDonor){
         //finding the group and initiative name for metadata section
@@ -211,7 +214,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
         const initiativeTags = await Initiative.findById(initiativeId).select({_id:0, tags:1})
         const userEmail = await Donor.findById(req.session.donor.id).select({_id:0, email: 1})
         const userName = await Donor.findById(req.session.donor.id).select({_id:0, name: 1})
-        const {amount, name, email} = req.body;
+        const {amount} = req.body;
         try{
             amountInCent = amount * 100;
             const paymentInfo = {
@@ -227,10 +230,9 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
                 name: userName.name
             }
 
-            const contribution = {
+            const transaction = {
                 amount: amount,
                 groupName: groupName.name,
-                name: name,
                 initiativeTags: initiativeTags.tags
             }
 
@@ -245,7 +247,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
                 metadata:{
                     initiativeName: initiativeName.title,
                     groupName: groupName.name,
-                    giftedFor: name,
+                    inTheNameOf: userName.name,
                     amount: amount,
                     email: userEmail.email
                 }
@@ -260,7 +262,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
             console.log(transaction)
 
            const update = await Donor.findById(req.session.donor.id).update({
-                $push: {giftContributions: contribution}
+                $push: {transactions: transaction}
             })
             .catch((err)=>{
                 console.error(err)

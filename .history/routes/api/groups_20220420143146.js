@@ -125,13 +125,13 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
         const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
         const initiativeTags = await Initiative.findById(initiativeId).select({_id:0, tags:1})
         const userEmail = await Donor.findById(req.session.donor.id).select({_id:0, email: 1})
-        const userName = await Donor.findById(req.session.donor.id).select({_id:0, name: 1})
-        const {amount} = req.body;
+        const {onBehalfOf, amount} = req.body;
         try{
             amountInCent = amount * 100;
             const paymentInfo = {
                 initiativeName: initiativeName.title,
                 groupName: groupName.name,
+                inTheNameOf: onBehalfOf,
                 amount: amount,
                 email: userEmail.email
             }
@@ -139,7 +139,6 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
             const donation = {
                 amount: amount,
                 email: userEmail.email,
-                name: userName.name
             }
 
             const transaction = {
@@ -159,7 +158,7 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
                 metadata:{
                     initiativeName: initiativeName.title,
                     groupName: groupName.name,
-                    inTheNameOf: userName.name,
+                    inTheNameOf: onBehalfOf,
                     amount: amount,
                     email: userEmail.email
                 }
@@ -175,92 +174,6 @@ router.post("/:groupId/:initiativeId/donate", async (req, res)=>{
 
            const update = await Donor.findById(req.session.donor.id).update({
                 $push: {transactions: transaction}
-            })
-            .catch((err)=>{
-                console.error(err)
-            })
-            console.log(update)
-
-            console.log(paymentIntent.client_secret)
-            res.json({
-                clientSecret: paymentIntent.client_secret,
-                paymentInfo: paymentInfo
-            })
-        }
-        catch(err){
-            console.log(err)
-            res.status(400).json({error: {message: err.message}})
-        }
-    }
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
-    const groupId = req.params.groupId
-    const initiativeId = req.params.initiativeId
-    const sessDonor = req.session.donor;
-
-    if(sessDonor){
-        //finding the group and initiative name for metadata section
-        const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
-        const groupName = await Organisation.findById(groupId).select({_id:0, name:1})
-        const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
-        const initiativeTags = await Initiative.findById(initiativeId).select({_id:0, tags:1})
-        const userEmail = await Donor.findById(req.session.donor.id).select({_id:0, email: 1})
-        const userName = await Donor.findById(req.session.donor.id).select({_id:0, name: 1})
-        const {amount, name, email} = req.body;
-        try{
-            amountInCent = amount * 100;
-            const paymentInfo = {
-                initiativeName: initiativeName.title,
-                groupName: groupName.name,
-                amount: amount,
-                email: userEmail.email
-            }
-            //to add to donation history of initiative
-            const donation = {
-                amount: amount,
-                email: userEmail.email,
-                name: userName.name
-            }
-
-            const contribution = {
-                amount: amount,
-                groupName: groupName.name,
-                name: name,
-                initiativeTags: initiativeTags.tags
-            }
-
-            const paymentIntent = await stripe.paymentIntents.create({
-                payment_method_types: ['card'],
-                amount: amountInCent,
-                currency: 'eur',
-                on_behalf_of: orgStripeId.stripeAccountId,
-                transfer_data:{
-                    destination: orgStripeId.stripeAccountId
-                },
-                metadata:{
-                    initiativeName: initiativeName.title,
-                    groupName: groupName.name,
-                    giftedFor: name,
-                    amount: amount,
-                    email: userEmail.email
-                }
-            })
-            await Initiative.findById(initiativeId).update({
-                $push: {donationHistory: donation}
-            })
-            .catch((err)=>{
-                console.error(err)
-            })
-
-            console.log(transaction)
-
-           const update = await Donor.findById(req.session.donor.id).update({
-                $push: {giftContributions: contribution}
             })
             .catch((err)=>{
                 console.error(err)

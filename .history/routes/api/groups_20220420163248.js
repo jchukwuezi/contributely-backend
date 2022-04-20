@@ -245,7 +245,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
                 metadata:{
                     initiativeName: initiativeName.title,
                     groupName: groupName.name,
-                    giftedFor: name,
+                    inTheNameOf: userName.name,
                     amount: amount,
                     email: userEmail.email
                 }
@@ -260,7 +260,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
             console.log(transaction)
 
            const update = await Donor.findById(req.session.donor.id).update({
-                $push: {giftContributions: contribution}
+                $push: {transactions: transaction}
             })
             .catch((err)=>{
                 console.error(err)
