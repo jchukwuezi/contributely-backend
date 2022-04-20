@@ -269,8 +269,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
             })
             console.log(update)
 
-            const gen = await generatePdf(name, amount, initiativeName.title, groupName.name)
-            console.log(gen)
+            generatePdf(name, amount, initiativeName.title, groupName.name)
 
             console.log(paymentIntent.client_secret)
             res.json({

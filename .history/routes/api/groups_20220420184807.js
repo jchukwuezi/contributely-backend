@@ -4,7 +4,6 @@ const router = express.Router();
 const Initiative = require('../../models/Initiative')
 const Organisation = require('../../models/Organisation')
 const Donor = require('../../models/Donor')
-const {generatePdf} = require('../../services/generatePdf')
 const groups = []
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
@@ -268,9 +267,6 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
                 console.error(err)
             })
             console.log(update)
-
-            const gen = await generatePdf(name, amount, initiativeName.title, groupName.name)
-            console.log(gen)
 
             console.log(paymentIntent.client_secret)
             res.json({
