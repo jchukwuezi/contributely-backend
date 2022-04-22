@@ -68,12 +68,12 @@ const globalGivingThemes = new Map([
     ["Wildlife Conversation", 'wildlife']
 ])
 
-const commonThemes = ['Sports', 'Education', 'Environment', 'Health & Medical']
-
+const common = ['Sports', 'Education', 'Environment', ]
+const ggGfmCommon = ['education']
+const cfGfmCommon = []
 
 module.exports = {
     goFundMeCategories,
     globalGivingThemes,
-    CrowdfunderCategories, 
-    commonThemes
+    CrowdfunderCategories
 }

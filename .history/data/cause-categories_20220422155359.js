@@ -1,20 +1,20 @@
 const goFundMeCategories =  new Map([
-    ["Health & Medical", '/en-ie/start/medical-fundraising'],
-    ["Memorial", '/en-ie/start/memorial-fundraising'],
-    ["Emergency", '/en-ie/start/emergency-fundraising'],
-    ["Charity", '/en-ie/start/charity-fundraising'],
-    ["Education", '/en-ie/start/education-fundraising'],
-    ["Animal", '/en-ie/discover/animal-fundraiser'],
-    ["Environment", '/en-ie/start/environment-fundraising'],
-    ["Competition", '/en-ie/discover/competition-fundraiser'],
-    ["Creative", '/en-ie/discover/creative-fundraiser'],
-    ["Event", '/en-ie/discover/event-fundraiser'],
-    ["Faith", '/en-ie/discover/faith-fundraiser'],
-    ["Family", '/en-ie/discover/family-fundraiser'],
-    ["Sports", '/en-ie/discover/sports-fundraiser'],
-    ["Travel", '/en-ie/discover/travel-fundraiser'],
-    ["Volunteer", '/en-ie/discover/volunteer-fundraiser'],
-    ["Wishes", '/en-ie/discover/wishes-fundraiser']
+    ["medical", '/en-ie/start/medical-fundraising'],
+    ["memorial", '/en-ie/start/memorial-fundraising'],
+    ["emergency", '/en-ie/start/emergency-fundraising'],
+    ["charity", '/en-ie/start/charity-fundraising'],
+    ["education", '/en-ie/start/education-fundraising'],
+    ["animal", '/en-ie/discover/animal-fundraiser'],
+    ["environment", '/en-ie/start/environment-fundraising'],
+    ["competition", '/en-ie/discover/competition-fundraiser'],
+    ["creative", '/en-ie/discover/creative-fundraiser'],
+    ["event", '/en-ie/discover/event-fundraiser'],
+    ["faith", '/en-ie/discover/faith-fundraiser'],
+    ["family", '/en-ie/discover/family-fundraiser'],
+    ["sports", '/en-ie/discover/sports-fundraiser'],
+    ["travel", '/en-ie/discover/travel-fundraiser'],
+    ["volunteer", '/en-ie/discover/volunteer-fundraiser'],
+    ["wishes", '/en-ie/discover/wishes-fundraiser']
 ])
 
 const CrowdfunderCategories = new Map([
@@ -27,10 +27,10 @@ const CrowdfunderCategories = new Map([
     ["Music", 'category=Music&completed=pending&isLive=true&map=off'], 
     ["Film and Theatre", 'category=Film%20and%20Theatre&completed=pending&isLive=true&map=off'], 
     ["Sports", 'category=Sports&completed=pending&isLive=true&map=off'], 
-    ["Education", 'category=Schools&completed=pending&isLive=true&map=off'],
+    ["Schools", 'category=Schools&completed=pending&isLive=true&map=off'],
     ["Food and Drink", 'category=Food%20and%20Drink&completed=pending&isLive=true&map=off'], 
     ["Environment", 'category=Environment&completed=pending&isLive=true&map=off'], 
-    ["Health & Medical", 'category=Health%20%26%20fitness&completed=pending&isLive=true&map=off'],
+    ["Health & Fitness", 'category=Health%20%26%20fitness&completed=pending&isLive=true&map=off'],
     ["Politics", 'category=Politics&completed=pending&isLive=true&map=off'],
     ["Technology", 'category=Technology&completed=pending&isLive=true&map=off'],
     ["Leisure", 'category=Leisure&completed=pending&isLive=true&map=off'],
@@ -45,12 +45,12 @@ const globalGivingThemes = new Map([
     ["Disaster Response", 'disaster'],
     ["Economic Growth", 'ecdev'],
     ["Education", 'edu'],
-    ["Environment", 'env'],
+    ["Ecosystem Restoration", 'env'],
     ["Gender Equality", 'gender'],
-    ["Health & Medical", 'health'],
+    ["Physical Health", 'health'],
     ["Ending Human Trafficking", 'human'],
     ["Justice and Human Rights", 'rights'],
-    ["Sports", 'sport'],
+    ["Sport", 'sport'],
     ["Digital Literacy", 'tech'],
     ["Food Security", 'hunger'],
     ["Arts and Culture", 'art'],
@@ -68,12 +68,8 @@ const globalGivingThemes = new Map([
     ["Wildlife Conversation", 'wildlife']
 ])
 
-const commonThemes = ['Sports', 'Education', 'Environment', 'Health & Medical']
-
-
 module.exports = {
     goFundMeCategories,
     globalGivingThemes,
-    CrowdfunderCategories, 
-    commonThemes
+    CrowdfunderCategories
 }

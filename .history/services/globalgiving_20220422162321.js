@@ -131,6 +131,7 @@ const getCausesByCountry = async (url) => {
 
     parser.parseStringPromise(data)
     .then(async (res)=>{
+
         const project1 = res["projects"]["project"][0]
         const project2 = res["projects"]["project"][1]
         const project3 = res["projects"]["project"][2]
