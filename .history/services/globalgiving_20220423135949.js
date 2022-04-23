@@ -2,6 +2,7 @@
 const xml2js = require('xml2js')
 const fetch = require('node-fetch')
 
+
 //function to create the url that a get request will be sent to for a specific theme
 const getThemeUrl = (theme) => {
     return 'https://api.globalgiving.org/api/public/projectservice/themes/' + theme.toLowerCase() +  '/projects/active/summary?api_key=' + process.env.GG_API_KEY;

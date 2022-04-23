@@ -11,7 +11,6 @@ router.get("/get", async (req, res) =>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         //find donor interests
-        const causeInfo = []
         const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
         if(interests.interests.length === 0){
             console.log("no interests found for this user")
@@ -25,6 +24,7 @@ router.get("/get", async (req, res) =>{
             const category = random
             console.log("Scraping causes for category : " + category)
             const url = CrowdfunderCategories.get(random)
+            const causeInfo = []
             console.log(url);
             (async ()=>{
                 //launching puppeteer browser

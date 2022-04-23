@@ -1,10 +1,11 @@
 //this route will find scrape and return gofundme causes
-const {goFundMeCategories} = require('../../data/cause-categories')
+const {commonThemes, goFundMeCategories} = require('../../data/cause-categories')
 //console.log(goFundMeCategories)
 const base_url = 'https://www.gofundme.com'
 const cheerio = require('cheerio')
 const fetch = require('node-fetch')
 const express = require('express')
+const Donor = require("../../models/Donor")
 const router = express.Router()
 
 router.get("/get", async (req, res) => {
@@ -13,7 +14,7 @@ router.get("/get", async (req, res) => {
     //this will be hardcoded right now but it will be from the category map imported
     const url = base_url + goFundMeCategories.get("sports")
     const causeInfo = []
-    console.log(url)
+    //console.log(url)
     //finding first 3 causes
     const findCauseURLs = async() => {
         console.log(url)
@@ -32,13 +33,14 @@ router.get("/get", async (req, res) => {
     }
 
     const extractPageInfo = async (...links) =>{
-        links.forEach(async(link) =>{
+        for (const link of links){
             let causeObj ={}
             const data = await fetch(link)
             const pageBody = await data.text()
             const $ = cheerio.load(pageBody)
             const title = $('h1.a-campaign-title').text()
             const description = $('div.o-campaign-description').text()
+            const categories = $('a.m-campaign-byline-type.divider-prefix.meta-divider.flex-container.align-center.color-dark-gray.hrt-tertiary-button.hrt-base-button.hrt-link.hrt-link--gray-dark.hrt-link--unstyled').text()
             let summary = description.split('. ', 1)[0]
             summary = summary.replace(/(\r\n|\n|\r)/gm, "")
             const causeUrl = link
@@ -47,18 +49,21 @@ router.get("/get", async (req, res) => {
             const imgDetails = $('div.a-image.a-image--background').attr('style')
             const imgUrl = getImgUrl(imgDetails)
             const dateCreated = $('span.m-campaign-byline-created.a-created-date').text()
+            console.log(dateCreated)
             causeObj = {
                 "title": title,
                 "description": summary,
                 "url": causeUrl,
                 "goalAmount": goalAmount,
+                "categories": categories,
                 "image": imgUrl,
                 "dateCreated": dateCreated
             }
-            console.log(causeObj)
+            //console.log(causeObj)
             causeInfo.push(causeObj)
-        })
-        console.log(causeInfo)
+            //console.log(causeInfo.length) 
+        }
+        //console.log(causeInfo)
         res.send(causeInfo)    
     }
 
@@ -76,6 +81,34 @@ router.get("/get", async (req, res) => {
     }
 
     findCauseURLs();
+})
+
+router.get("/get", (req, res)=>{
+    const sessDonor = req.session.donor;
+    if(sessDonor){
+        //find donor interests
+        const causeInfo = []
+        const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
+        if(interests.interests.length === 0){
+            console.log("no interests found for this user")
+            return res.send([])
+        }
+        const gfmThemes = [...goFundMeCategories.keys()]
+        //intersection between user interests and Crowdfunder categories
+        const intersec = interests.interests.filter(elem=>gfmThemes.includes(elem)) 
+        if(intersec.length != 0){
+
+        }
+
+        else{
+            console.log("no interests found that match the gofundme categories")
+            return res.send([])
+        }
+    }
+
+    else{
+
+    }
 })
 
 

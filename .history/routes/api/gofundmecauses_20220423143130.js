@@ -8,7 +8,6 @@ const express = require('express')
 const Donor = require("../../models/Donor")
 const router = express.Router()
 
-/*
 router.get("/get", async (req, res) => {
     //add donor auth 
     //this will be used to find the user's interests
@@ -83,9 +82,8 @@ router.get("/get", async (req, res) => {
 
     findCauseURLs();
 })
-*/
 
-router.get("/get", async (req, res)=>{
+router.get("/get", (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         //find donor interests
@@ -106,18 +104,16 @@ router.get("/get", async (req, res)=>{
             const url = base_url + catUrl
 
             /*METHODS TO SCRAPE GO FUNDME DATA [START] */
-            const findCauseURLs = async()=>{
-                const data = await fetch(url)
-                const pageBody = await data.text()
-                const $ = cheerio.load(pageBody)
-                //first 3 causes in that category
-                const causeLinks = []
-                $('div.grid-x.grid-margin-x.funds-contain.funds-contain--tiles-grid').find('div > div > a').each((index, elem) => {
-                    const causeUrl = $(elem).attr('href')
-                    causeLinks.push(causeUrl)
-                })
-                extractPageInfo(...causeLinks.slice(0,3))
-            }
+            const data = await fetch(url)
+            const pageBody = await data.text()
+            const $ = cheerio.load(pageBody)
+            //first 3 causes in that category
+            const causeLinks = []
+            $('div.grid-x.grid-margin-x.funds-contain.funds-contain--tiles-grid').find('div > div > a').each((index, elem) => {
+                const causeUrl = $(elem).attr('href')
+                causeLinks.push(causeUrl)
+            })
+            extractPageInfo(...causeLinks.slice(0,3))
 
             const extractPageInfo = async (...links) =>{
                 for (const link of links){
@@ -135,7 +131,7 @@ router.get("/get", async (req, res)=>{
                     const goalAmount = getGoalValue(goalValue)
                     const imgDetails = $('div.a-image.a-image--background').attr('style')
                     const imgUrl = getImgUrl(imgDetails)
-                    const dateCreated = $('span.m-campaign-byline-created.a-created-date.show-for-large').text()
+                    const dateCreated = $('span.m-campaign-byline-created.a-created-date').text()
                     console.log(dateCreated)
                     causeObj = {
                         "title": title,
@@ -151,12 +147,12 @@ router.get("/get", async (req, res)=>{
                     //console.log(causeInfo.length) 
                 }
                 //console.log(causeInfo)
-                return res.send({
+                res.send({
                     "category": category,
                     "causeInfo": causeInfo
                 })    
             }
-
+        
             //function to get the cause image url to send to client
             const getImgUrl = (url) => {
                 //the url link is between two words, using a reg. expression to take it out
@@ -169,8 +165,6 @@ router.get("/get", async (req, res)=>{
             const getGoalValue = (goal) => {
                 return goal.match("of(.*)goal")[1]
             }
-
-            findCauseURLs()
         }
 
         else{
@@ -180,8 +174,7 @@ router.get("/get", async (req, res)=>{
     }
 
     else{
-        console.log("No user was found. This is funny because it works on post man")
-        res.status(401).send('Unauthorized')
+
     }
 })
 

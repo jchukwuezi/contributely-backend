@@ -135,7 +135,7 @@ router.get("/get", async (req, res)=>{
                     const goalAmount = getGoalValue(goalValue)
                     const imgDetails = $('div.a-image.a-image--background').attr('style')
                     const imgUrl = getImgUrl(imgDetails)
-                    const dateCreated = $('span.m-campaign-byline-created.a-created-date.show-for-large').text()
+                    const dateCreated = $('span.m-campaign-byline-created.a-created-date').text()
                     console.log(dateCreated)
                     causeObj = {
                         "title": title,
