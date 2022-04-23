@@ -165,7 +165,7 @@ router.get("/country", async (req, res)=>{
     }
 })
 
-router.get("/common", async (req, res)=>{
+router.get("/common", (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         const causeInfo = []
@@ -225,6 +225,8 @@ router.get("/common", async (req, res)=>{
                     themes: await getProjectThemes(specificIdUrl(project3["id"]))
                 }
                 causeInfo.push(project1Obj, project2Obj, project3Obj)
+                //console.log("Printing out cause list")
+                //console.log(causeList)
                 return res.send(causeInfo)
             })
         }

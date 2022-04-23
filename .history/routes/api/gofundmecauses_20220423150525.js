@@ -109,10 +109,9 @@ router.get("/get", async (req, res)=>{
     }
 })
 
-router.get("/common", async (req, res)=>{
+router.get("/common", (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
-        const causeInfo = []
         const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
         if(interests.interests.length === 0){
             console.log("no interests found for this user")
@@ -120,7 +119,6 @@ router.get("/common", async (req, res)=>{
         }
         const intersec = interests.interests.filter(elem=>commonThemes.includes(elem)) 
         if(intersec.length != 0){
-            const category = intersec[0]
             console.log("Scraping causes for category : " + intersec[0])
             const catUrl = goFundMeCategories.get(intersec[0])
             const url = base_url + catUrl
@@ -191,7 +189,7 @@ router.get("/common", async (req, res)=>{
             findCauseURLs()
             /*METHODS TO SCRAPE GO FUNDME DATA [END] */
         }
-
+        
         else{
             console.log("no interests found that are in the common themes")
             return res.send([])

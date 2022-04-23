@@ -165,7 +165,7 @@ router.get("/country", async (req, res)=>{
     }
 })
 
-router.get("/common", async (req, res)=>{
+router.get("/common", (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         const causeInfo = []

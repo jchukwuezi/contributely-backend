@@ -89,7 +89,7 @@ router.get("/get", async (req, res) =>{
     }
 })
 
-router.get("/common", async (req, res)=>{
+router.get("/get-common", async (req, res)=>{
     const sessDonor = req.session.donor;
     const causeInfo = []
     if(sessDonor){

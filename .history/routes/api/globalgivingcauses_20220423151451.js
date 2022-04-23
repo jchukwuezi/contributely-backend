@@ -165,7 +165,7 @@ router.get("/country", async (req, res)=>{
     }
 })
 
-router.get("/common", async (req, res)=>{
+router.get("/common", (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         const causeInfo = []
@@ -176,59 +176,9 @@ router.get("/common", async (req, res)=>{
         }
         const intersec = interests.interests.filter(elem=>commonThemes.includes(elem)) 
         if (intersec.length != 0){
-            const url = getThemeUrl(globalGivingThemes.get(intersec[0]))
-            const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
-            const causeResponse = await fetch(url, {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'}
-            })
-            const data = await causeResponse.text()
-            parser.parseStringPromise(data)
-            .then(async (result) => {
-                const project1 = result["projects"]["project"][0]
-                const project2 = result["projects"]["project"][1]
-                const project3 = result["projects"]["project"][2]
-        
-                const project1Obj = {
-                    image: project1["imageLink"],
-                    title: project1["title"],
-                    country: project1["country"],
-                    summary: project1["summary"],
-                    country: project1["country"],
-                    mission: project1["organization"]["mission"],
-                    id: project1["id"],
-                    url: await getProjectUrl(specificIdUrl(project1["id"])),
-                    themes: await getProjectThemes(specificIdUrl(project1["id"]))
-                }
-        
-                const project2Obj = {
-                    image: project2["imageLink"],
-                    title: project2["title"],
-                    country: project2["country"],
-                    summary: project2["summary"],
-                    country: project2["country"],
-                    mission: project2["organization"]["mission"],
-                    id: project2["id"],
-                    url: await getProjectUrl(specificIdUrl(project2["id"])),
-                    themes: await getProjectThemes(specificIdUrl(project2["id"]))
-                }
-        
-                const project3Obj = {
-                    image: project3["imageLink"],
-                    title: project3["title"],
-                    country: project3["country"],
-                    summary: project3["summary"],
-                    country: project3["country"],
-                    mission: project3["organization"]["mission"],
-                    id: project3["id"],
-                    url: await getProjectUrl(specificIdUrl(project3["id"])),
-                    themes: await getProjectThemes(specificIdUrl(project3["id"]))
-                }
-                causeInfo.push(project1Obj, project2Obj, project3Obj)
-                return res.send(causeInfo)
-            })
-        }
 
+        }
+        
         else{
             console.log("no common interests found")
             return res.send([])

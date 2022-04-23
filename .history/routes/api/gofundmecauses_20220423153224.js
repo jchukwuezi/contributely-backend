@@ -120,7 +120,6 @@ router.get("/common", async (req, res)=>{
         }
         const intersec = interests.interests.filter(elem=>commonThemes.includes(elem)) 
         if(intersec.length != 0){
-            const category = intersec[0]
             console.log("Scraping causes for category : " + intersec[0])
             const catUrl = goFundMeCategories.get(intersec[0])
             const url = base_url + catUrl

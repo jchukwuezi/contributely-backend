@@ -89,15 +89,11 @@ router.get("/get", async (req, res) =>{
     }
 })
 
-router.get("/common", async (req, res)=>{
+router.get("/get-common", async (req, res)=>{
     const sessDonor = req.session.donor;
     const causeInfo = []
     if(sessDonor){
         const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
-        if(interests.interests.length === 0){
-            console.log("no interests found for this user")
-            return res.send([])
-        }
         const intersec = interests.interests.filter(elem=>commonThemes.includes(elem)) 
         if (intersec.length != 0){
             const category = intersec[0]
