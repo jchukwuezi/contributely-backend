@@ -115,10 +115,10 @@ router.get("/country", async (req, res)=>{
         })
         const data = await causeResponse.text()
         parser.parseStringPromise(data)
-        .then(async (result)=>{
-            const project1 = result["projects"]["project"][0]
-            const project2 = result["projects"]["project"][1]
-            const project3 = result["projects"]["project"][2]
+        .then(async (res)=>{
+            const project1 = res["projects"]["project"][0]
+            const project2 = res["projects"]["project"][1]
+            const project3 = res["projects"]["project"][2]
     
             const project1Obj = {
                 image: project1["imageLink"],
