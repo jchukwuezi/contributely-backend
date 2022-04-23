@@ -5,7 +5,7 @@ const Subscription = require("../../models/Subscription")
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 const {commonThemes, globalGivingThemes} = require('../../data/cause-categories')
-const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry, getCausesByInterests2} = require('../../services/globalgiving')
+const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry, logCauses} = require('../../services/globalgiving')
 
 //putting donor in an api folder to isolate its
 

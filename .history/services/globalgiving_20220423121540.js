@@ -141,7 +141,7 @@ const getCausesByInterests2 = async (url) => {
 
         const causeList = []
         causeList.push(project1Obj, project2Obj, project3Obj)
-        //console.log(causeList)
+        console.log(causeList)
         return causeList
     })
     .catch((err) => {

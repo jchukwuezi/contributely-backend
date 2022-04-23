@@ -92,12 +92,13 @@ router.get("/get", async (req, res) =>{
 router.get("/get-common", async (req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
+        const url  = ""
         const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
         const intersec = interests.interests.filter(elem=>commonThemes.includes(elem)) 
         if (intersec.length != 0){
             const category = intersec[0]
             console.log("Scraping causes for category : " + category)
-            const url = CrowdfunderCategories.get(intersec[0])
+            url = CrowdfunderCategories.get(intersec[0])
             const causeInfo = []
             //const url = CrowdfunderCategories.get("Business");
             console.log(url);

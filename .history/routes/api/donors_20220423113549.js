@@ -5,7 +5,7 @@ const Subscription = require("../../models/Subscription")
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 const {commonThemes, globalGivingThemes} = require('../../data/cause-categories')
-const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry, getCausesByInterests2} = require('../../services/globalgiving')
+const {getThemeUrl, getCountryUrl, causeListCountry, causeListInterest, getCausesByInterests, getCausesByCountry} = require('../../services/globalgiving')
 
 //putting donor in an api folder to isolate its
 
@@ -193,13 +193,10 @@ router.get("/get-causes/interest", async (req, res) => {
         if (intersec.length != 0){
             const random = intersec[Math.floor(Math.random()*intersec.length)]
             console.log(random)
-            const category = random
-            console.log("Getting GG causes for category " + globalGivingThemes.get(random))
-            const url = getThemeUrl(globalGivingThemes.get(random))
+            const category = intersec[0]
+            console.log("Getting GG causes for category " + globalGivingThemes.get(intersec[0]))
+            const url = getThemeUrl(globalGivingThemes.get(intersec[0]))
             console.log(url)
-            const result = await getCausesByInterests2(url)
-            console.log("Printing out the result")
-            console.log(result)
             await getCausesByInterests(url)
             res.send({
                 "causeInfo": causeListInterest,

@@ -83,72 +83,6 @@ const getCausesByInterests = async (url) => {
     })
 }
 
-const getCausesByInterests2 = async (url) => {
-    const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
-    const causeResponse = await fetch(url, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'}
-    })
-
-    const data = await causeResponse.text()
-
-    const random = (min, max) => {
-        return Math.random() * (max - min) + min 
-    }
-
-    parser.parseStringPromise(data)
-    .then(async (res) => {
-
-        const project1 = res["projects"]["project"][0]
-        const project2 = res["projects"]["project"][1]
-        const project3 = res["projects"]["project"][2]
-
-        const project1Obj = {
-            image: project1["imageLink"],
-            title: project1["title"],
-            country: project1["country"],
-            summary: project1["summary"],
-            country: project1["country"],
-            mission: project1["organization"]["mission"],
-            id: project1["id"],
-            url: await getProjectUrl(specificIdUrl(project1["id"])),
-            themes: await getProjectThemes(specificIdUrl(project1["id"]))
-        }
-
-        const project2Obj = {
-            image: project2["imageLink"],
-            title: project2["title"],
-            country: project2["country"],
-            summary: project2["summary"],
-            country: project2["country"],
-            mission: project2["organization"]["mission"],
-            id: project2["id"],
-            url: await getProjectUrl(specificIdUrl(project2["id"])),
-            themes: await getProjectThemes(specificIdUrl(project2["id"]))
-        }
-
-        const project3Obj = {
-            image: project3["imageLink"],
-            title: project3["title"],
-            country: project3["country"],
-            summary: project3["summary"],
-            country: project3["country"],
-            mission: project3["organization"]["mission"],
-            id: project3["id"],
-            url: await getProjectUrl(specificIdUrl(project3["id"])),
-            themes: await getProjectThemes(specificIdUrl(project3["id"]))
-        }
-
-        const causeList = []
-        causeList.push(project1Obj, project2Obj, project3Obj)
-        //console.log(causeList)
-        return causeList
-    })
-    .catch((err) => {
-        console.error(err)
-    })
-}
-
  const getProjectUrl = async(url) =>{
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
     const causeResponse = await fetch(url, {
@@ -251,7 +185,6 @@ module.exports = {
     getCountryUrl: getCountryUrl,
     getCausesByInterests: getCausesByInterests,
     getCausesByCountry: getCausesByCountry,
-    getCausesByInterests2: getCausesByInterests2,
     causeListInterest,
     causeListCountry
 }

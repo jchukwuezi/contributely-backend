@@ -141,13 +141,15 @@ const getCausesByInterests2 = async (url) => {
 
         const causeList = []
         causeList.push(project1Obj, project2Obj, project3Obj)
-        //console.log(causeList)
+        console.log(causeList)
         return causeList
     })
     .catch((err) => {
         console.error(err)
     })
 }
+
+
 
  const getProjectUrl = async(url) =>{
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
