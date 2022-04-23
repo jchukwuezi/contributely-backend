@@ -1,7 +1,7 @@
 //this file will be used to get information from the just giving api to get information of different fundraisers
 const xml2js = require('xml2js')
 const fetch = require('node-fetch')
-const API_KEY = process.env.GG_API_KEY;
+const {commonThemes, globalGivingThemes} = require('../data/cause-categories')
 const causeListInterest = []
 const causeListCountry = []
 
@@ -36,19 +36,20 @@ const getCausesByInterests = async (url) => {
     parser.parseStringPromise(data)
     .then(async (res) => {
 
-        const project1 = res["projects"]["project"][Math.floor(random(1, 10))-1]
-        const project2 = res["projects"]["project"][Math.floor(random(1, 10))-1]
-        const project3 = res["projects"]["project"][Math.floor(random(1, 10))-1]
-        
-        console.log(getProjectThemes(specificIdUrl(project1["id"])))
+        const project1 = res["projects"]["project"][0]
+        const project2 = res["projects"]["project"][1]
+        const project3 = res["projects"]["project"][2]
 
         const project1Obj = {
             image: project1["imageLink"],
             title: project1["title"],
             country: project1["country"],
             summary: project1["summary"],
+            country: project1["country"],
+            mission: project1["organization"]["mission"],
             id: project1["id"],
-            url: await getProjectUrl(specificIdUrl(project1["id"]))
+            url: await getProjectUrl(specificIdUrl(project1["id"])),
+            themes: await getProjectThemes(specificIdUrl(project1["id"]))
         }
 
         const project2Obj = {
@@ -56,8 +57,11 @@ const getCausesByInterests = async (url) => {
             title: project2["title"],
             country: project2["country"],
             summary: project2["summary"],
+            country: project2["country"],
+            mission: project2["organization"]["mission"],
             id: project2["id"],
-            url: await getProjectUrl(specificIdUrl(project2["id"]))
+            url: await getProjectUrl(specificIdUrl(project2["id"])),
+            themes: await getProjectThemes(specificIdUrl(project2["id"]))
         }
 
         const project3Obj = {
@@ -65,8 +69,11 @@ const getCausesByInterests = async (url) => {
             title: project3["title"],
             country: project3["country"],
             summary: project3["summary"],
+            country: project3["country"],
+            mission: project3["organization"]["mission"],
             id: project3["id"],
-            url: await getProjectUrl(specificIdUrl(project3["id"]))
+            url: await getProjectUrl(specificIdUrl(project3["id"])),
+            themes: await getProjectThemes(specificIdUrl(project3["id"]))
         }
 
         causeListInterest.push(project1Obj, project2Obj, project3Obj)
@@ -76,70 +83,77 @@ const getCausesByInterests = async (url) => {
     })
 }
 
-/*
-//returns singular cause, will call this method a few times to send an array in 
-const getCauseByInterest = async (interest) => {
-    const url = getThemeUrl(interest)
+const getCausesByInterests2 = async (url) => {
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
     const causeResponse = await fetch(url, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'}
     })
+
     const data = await causeResponse.text()
+
+    const random = (min, max) => {
+        return Math.random() * (max - min) + min 
+    }
+
     parser.parseStringPromise(data)
-    .then((res)=>{
-        //const projectList = res["projects"]
-        const random = (min, max) => {
-            return Math.random() * (max - min) + min 
+    .then(async (res) => {
+
+        const project1 = res["projects"]["project"][0]
+        const project2 = res["projects"]["project"][1]
+        const project3 = res["projects"]["project"][2]
+
+        const project1Obj = {
+            image: project1["imageLink"],
+            title: project1["title"],
+            country: project1["country"],
+            summary: project1["summary"],
+            country: project1["country"],
+            mission: project1["organization"]["mission"],
+            id: project1["id"],
+            url: await getProjectUrl(specificIdUrl(project1["id"])),
+            themes: await getProjectThemes(specificIdUrl(project1["id"]))
         }
-        const project = res["projects"]["project"][Math.floor(random(1, 10))-1]
-        const projectObj = {
-            image: project["imageLink"],
-            title: project["title"],
-            country: project["country"],
-            summary: project["summary"]
+
+        const project2Obj = {
+            image: project2["imageLink"],
+            title: project2["title"],
+            country: project2["country"],
+            summary: project2["summary"],
+            country: project2["country"],
+            mission: project2["organization"]["mission"],
+            id: project2["id"],
+            url: await getProjectUrl(specificIdUrl(project2["id"])),
+            themes: await getProjectThemes(specificIdUrl(project2["id"]))
         }
-        return projectObj
+
+        const project3Obj = {
+            image: project3["imageLink"],
+            title: project3["title"],
+            country: project3["country"],
+            summary: project3["summary"],
+            country: project3["country"],
+            mission: project3["organization"]["mission"],
+            id: project3["id"],
+            url: await getProjectUrl(specificIdUrl(project3["id"])),
+            themes: await getProjectThemes(specificIdUrl(project3["id"]))
+        }
+
+        const causeList = []
+        causeList.push(project1Obj, project2Obj, project3Obj)
+        //console.log(causeList)
+        return causeList
     })
-    .catch((err)=> {
+    .catch((err) => {
         console.error(err)
     })
 }
 
- const getCausesByInterests = async (...interests) => {
-    let proj1 = ''
-    let proj2 = ''
-    let proj3 = ''
-    if(interests.length<3 && interests.length>2){
-        proj1 = getCauseByInterest(interests[0])
-        proj2 = getCauseByInterest(interests[1])
-        //making sure it doesn't return the same project as before 
-        proj3 = getCauseByInterest(interests[1])
-        causeListInterest.push(proj1, proj2, proj3)
-    }
-
-    else if(interests.length === 3){
-        proj1 = getCauseByInterest(interests[0])
-        proj2 = getCauseByInterest(interests[1])
-        proj3 = getCauseByInterest(interests[2])
-        causeListInterest.push(proj1, proj2, proj3)
-    }
-
-    else if(interests.length === 1){
-        proj1 = getCauseByInterest(interests[0])
-        proj2 = getCauseByInterest(interests[0])
-        proj3 = getCauseByInterest(interests[0])
-        causeListInterest.push(proj1, proj2, proj3)
-    }
-
-    else if(interests.length > 3){
-        proj1 = getCauseByInterest(interests[Math.floor(Math.random()* interests.length)])
-        proj2 = getCauseByInterest(interests[Math.floor(Math.random()* interests.length)])
-        proj3 = getCauseByInterest(interests[Math.floor(Math.random()* interests.length)])
-        causeListInterest.push(proj1, proj2, proj3)
-    }
- }
- */
+const logCauses = async(url) =>{
+    const result = await getCausesByInterests2(url)
+    console.log(result)
+    return result
+}
 
  const getProjectUrl = async(url) =>{
     const parser = xml2js.Parser({ignoreAttrs : false, mergeAttrs : true, explicitArray: false});
@@ -161,8 +175,14 @@ const getCauseByInterest = async (interest) => {
     })
     const data = await causeResponse.text()
     const page = await parser.parseStringPromise(data)
-    const themes = page["project"]["themes"]
-    console.log(themes)
+    const themes = page["project"]["themes"]["theme"]
+    //console.log(themes)
+    let ids = []
+    for(let i=0; i<themes.length; i++){
+        //console.log(themes[i]["id"])
+        ids.push(themes[i]["id"])
+    }
+    return ids
  }
 
 
@@ -182,18 +202,21 @@ const getCausesByCountry = async (url) => {
     const data = await causeResponse.text()
 
     parser.parseStringPromise(data)
-    .then((res)=>{
-
-        const project1 = res["projects"]["project"][Math.floor(random(1, 10))-1]
-        const project2 = res["projects"]["project"][Math.floor(random(1, 10))-1]
-        const project3 = res["projects"]["project"][Math.floor(random(1, 10))-1]
+    .then(async (res)=>{
+        const project1 = res["projects"]["project"][0]
+        const project2 = res["projects"]["project"][1]
+        const project3 = res["projects"]["project"][2]
 
         const project1Obj = {
             image: project1["imageLink"],
             title: project1["title"],
             country: project1["country"],
             summary: project1["summary"],
-            id: project1["id"]
+            goal: project1["goal"],
+            longTermImpact: project1["longTermImpact"],
+            id: project1["id"],
+            url: await getProjectUrl(specificIdUrl(project1["id"])),
+            themes: await getProjectThemes(specificIdUrl(project1["id"]))
         }
 
         const project2Obj = {
@@ -201,7 +224,11 @@ const getCausesByCountry = async (url) => {
             title: project2["title"],
             country: project2["country"],
             summary: project2["summary"],
-            id: project2["id"]
+            goal: project2["goal"],
+            longTermImpact: project2["longTermImpact"],
+            id: project2["id"],
+            url: await getProjectUrl(specificIdUrl(project2["id"])),
+            themes: await getProjectThemes(specificIdUrl(project2["id"]))
         }
 
         const project3Obj = {
@@ -209,7 +236,11 @@ const getCausesByCountry = async (url) => {
             title: project3["title"],
             country: project3["country"],
             summary: project3["summary"],
-            id: project3["id"]
+            goal: project3["goal"],
+            longTermImpact: project3["longTermImpact"],
+            id: project3["id"],
+            url: await getProjectUrl(specificIdUrl(project3["id"])),
+            themes: await getProjectThemes(specificIdUrl(project3["id"]))
         }
         
 
@@ -226,6 +257,7 @@ module.exports = {
     getCountryUrl: getCountryUrl,
     getCausesByInterests: getCausesByInterests,
     getCausesByCountry: getCausesByCountry,
+    getCausesByInterests2: getCausesByInterests2,
     causeListInterest,
     causeListCountry
 }

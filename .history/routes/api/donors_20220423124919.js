@@ -198,8 +198,9 @@ router.get("/get-causes/interest", async (req, res) => {
             const url = getThemeUrl(globalGivingThemes.get(random))
             console.log(url)
             console.log("Printing out the result")
-            const result = await getCausesByInterests2(url)
-            console.log(result)
+            await getCausesByInterests2(url).then((list)=>{
+                console.log(list)
+            })
             await getCausesByInterests(url)
             res.send({
                 "causeInfo": causeListInterest,

@@ -314,9 +314,6 @@ module.exports = {
     getCausesByCountry: getCausesByCountry,
     logCauses: logCauses,
     getCausesByInterests2: getCausesByInterests2,
-    specificIdUrl: specificIdUrl,
-    getProjectUrl: getProjectUrl,
-    getProjectThemes: getProjectThemes,
     causeListInterest,
     causeListCountry
 }

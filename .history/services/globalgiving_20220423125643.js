@@ -95,12 +95,12 @@ const getCausesByInterests2 = async (url) => {
     const random = (min, max) => {
         return Math.random() * (max - min) + min 
     }
-    
+
     const result = await parser.parseStringPromise(data)
     .catch((err)=>{
         console.error(err)
     })
-
+    
     const project1 = result["projects"]["project"][0]
     const project2 = result["projects"]["project"][1]
     const project3 = result["projects"]["project"][2]
@@ -144,7 +144,6 @@ const getCausesByInterests2 = async (url) => {
     const causeList = []
     causeList.push(project1Obj, project2Obj, project3Obj)
     return causeList
-    
     /*
     parser.parseStringPromise(data)
     .then(async (res) => {
@@ -314,9 +313,6 @@ module.exports = {
     getCausesByCountry: getCausesByCountry,
     logCauses: logCauses,
     getCausesByInterests2: getCausesByInterests2,
-    specificIdUrl: specificIdUrl,
-    getProjectUrl: getProjectUrl,
-    getProjectThemes: getProjectThemes,
     causeListInterest,
     causeListCountry
 }

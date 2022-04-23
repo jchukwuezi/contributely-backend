@@ -95,7 +95,8 @@ const getCausesByInterests2 = async (url) => {
     const random = (min, max) => {
         return Math.random() * (max - min) + min 
     }
-    
+
+    /*
     const result = await parser.parseStringPromise(data)
     .catch((err)=>{
         console.error(err)
@@ -140,12 +141,13 @@ const getCausesByInterests2 = async (url) => {
         url: await getProjectUrl(specificIdUrl(project3["id"])),
         themes: await getProjectThemes(specificIdUrl(project3["id"]))
     }
-
     const causeList = []
     causeList.push(project1Obj, project2Obj, project3Obj)
     return causeList
-    
-    /*
+    */
+
+    const causeList = []
+
     parser.parseStringPromise(data)
     .then(async (res) => {
 
@@ -188,16 +190,16 @@ const getCausesByInterests2 = async (url) => {
             url: await getProjectUrl(specificIdUrl(project3["id"])),
             themes: await getProjectThemes(specificIdUrl(project3["id"]))
         }
-
-        const causeList = []
         causeList.push(project1Obj, project2Obj, project3Obj)
         //console.log(causeList)
-        return causeList
+    })
+    .then(()=>{
+        return causeList;
     })
     .catch((err) => {
         console.error(err)
     })
-    */
+    
 
 
 
@@ -314,9 +316,6 @@ module.exports = {
     getCausesByCountry: getCausesByCountry,
     logCauses: logCauses,
     getCausesByInterests2: getCausesByInterests2,
-    specificIdUrl: specificIdUrl,
-    getProjectUrl: getProjectUrl,
-    getProjectThemes: getProjectThemes,
     causeListInterest,
     causeListCountry
 }

@@ -25,7 +25,13 @@ const OnlineCauses = require('./routes/api/onlinecauses')
 //declaring groups route
 const Groups = require('./routes/api/groups')
 //declaring goFundMeCause route
-//const GoFundMeCauses = require('./routes/api/gofundmecauses')
+const GoFundMeCauses = require('./routes/api/gofundmecauses')
+//declaring crowdfunder route
+const CrowdfunderCauses = require('./routes/api/crowdfundercauses')
+//declaring subscriptions route
+const Subscriptions = require('./routes/api/subscriptions')
+//declaring global giving causes route
+const GGCauses = require('./routes/api/globalgivingcauses')
 
 
 
@@ -67,7 +73,10 @@ app.use("/api/organisations", Organisations);
 app.use("/api/initiatives", Initiatives);
 app.use("/api/onlinecauses", OnlineCauses)
 app.use("/api/groups", Groups)
-//app.use("/api/gofundme", GoFundMeCauses)
+app.use("/api/gofundme", GoFundMeCauses)
+app.use("/api/crowdfunder", CrowdfunderCauses)
+app.use("/api/subscriptions", Subscriptions)
+app.use("/api/global-giving", GGCauses)
 
 app.listen(4000, ()=>{
     console.log('Server has started')
