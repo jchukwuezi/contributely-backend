@@ -93,9 +93,9 @@ const sendEndEmail = async (groupName, initiativeTitle, goalAmount, ...mailingLi
     })
 }
 
-const sendGiftEmail =  async (address, pathName, initiativeName, gifterName, goalAmount, amount, groupName) =>{
+const sendGiftEmail =  async (address, path) =>{
     console.log(address)
-    console.log(pathName)
+    console.log(path)
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -117,25 +117,19 @@ const sendGiftEmail =  async (address, pathName, initiativeName, gifterName, goa
 
     const mailingOptions = {
         from: '"Contributely" <ccontributely@gmail.com>',
-        to: address,
+        to: mailingList,
         subject: 'You have received a Gift Contribution!',
         template: 'giftEmail',
         context:{
             groupName: groupName,
-            initiativeTitle: initiativeName,
-            amount: amount, 
-            goalAmount: goalAmount,
-            gifterName: gifterName
-        },
-        attachment: pathName
+            initiativeTitle: initiativeTitle,
+            closingBalance: closingBalance
+        }
     }
 
-    transporter.sendMail(mailingOptions, (err, info)=>{
-        if(err){
-            console.log(err)
-        }
-        console.log('Message sent' + info.response)
-    })
+    
+
+
 }
 
 module.exports = {

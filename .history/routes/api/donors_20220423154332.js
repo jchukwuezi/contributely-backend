@@ -254,22 +254,6 @@ router.get("/collection-no", async(req, res)=>{
     }
 })
 
-router.get("/amount-gifted", async(req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        const gifts = await Donor.findById(req.session.donor.id).select({_id:0, giftContributions:1})
-        .catch((err)=>{
-            res.send(err)
-        })
-        const amount = gifts.giftContributions.reduce((n, {amount}) => n + amount, 0)
-        res.send({"amount": amount})
-    }
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
 router.get("/subscriptions", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessOrg){

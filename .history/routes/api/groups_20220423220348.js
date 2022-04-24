@@ -5,7 +5,6 @@ const Initiative = require('../../models/Initiative')
 const Organisation = require('../../models/Organisation')
 const Donor = require('../../models/Donor')
 const {generatePdf} = require('../../services/generatePdf')
-const {sendGiftEmail} = require('../../services/email')
 const groups = []
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
@@ -182,7 +181,6 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
         const orgStripeId = await Organisation.findById(groupId).select({_id:0, stripeAccountId:1})
         const groupName = await Organisation.findById(groupId).select({_id:0, name:1})
         const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
-        const goalAmount = await Initiative.findById(initiativeId).select({_id:0, goalAmount:1})
         const initiativeTags = await Initiative.findById(initiativeId).select({_id:0, tags:1})
         const userEmail = await Donor.findById(req.session.donor.id).select({_id:0, email: 1})
         const userName = await Donor.findById(req.session.donor.id).select({_id:0, name: 1})
@@ -245,7 +243,6 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
 
             const gen = await generatePdf(name, amount, initiativeName.title, groupName.name)
             console.log(gen)
-            //sendGiftEmail(email, gen, initiativeName.title, userName.name, goalAmount.goalAmount, amount, groupName.name)
 
             console.log(paymentIntent.client_secret)
             res.json({

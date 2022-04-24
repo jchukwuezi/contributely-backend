@@ -93,9 +93,9 @@ const sendEndEmail = async (groupName, initiativeTitle, goalAmount, ...mailingLi
     })
 }
 
-const sendGiftEmail =  async (address, pathName, initiativeName, gifterName, goalAmount, amount, groupName) =>{
+const sendGiftEmail =  async (address, path, initiativeName, gifterName, goalAmount, amount, groupName) =>{
     console.log(address)
-    console.log(pathName)
+    console.log(path)
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -127,7 +127,7 @@ const sendGiftEmail =  async (address, pathName, initiativeName, gifterName, goa
             goalAmount: goalAmount,
             gifterName: gifterName
         },
-        attachment: pathName
+        attachment: path
     }
 
     transporter.sendMail(mailingOptions, (err, info)=>{

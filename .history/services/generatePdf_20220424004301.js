@@ -2,10 +2,7 @@ const puppeteer = require('puppeteer');
 const hbs = require('handlebars');
 const fse = require('fs-extra')
 const randomstring = require('randomstring')
-const rs = randomstring.generate({
-    length: 5,
-    charset: 'alphanumeric'
-})
+
 
 const generatePdf = async (name, amount, initiativeName, groupName, gifterName, email) =>{
     console.log(name, amount, initiativeName, groupName)
@@ -44,7 +41,7 @@ const generatePdf = async (name, amount, initiativeName, groupName, gifterName, 
         console.log(content)
         await page.setContent(content)
         const buffer = await page.pdf({
-            path: `donation-${rs}.pdf`,
+            path: pathName,
             format: 'a4',
             printBackground: true
         });
