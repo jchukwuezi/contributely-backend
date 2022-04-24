@@ -42,27 +42,15 @@ const generatePdf = async (name, amount, initiativeName, groupName, gifterName, 
         const page = await browser.newPage()
         const content = await compile()
         console.log(content)
-        const pdfOptions = {
-            path: `donation-${name}-${rs}.pdf`,
-            format: 'a4',
-            printBackground: true
-        }
         await page.setContent(content)
-        /*
         const buffer = await page.pdf({
             path: `donation-${name}-${rs}.pdf`,
             format: 'a4',
             printBackground: true
         });
-        */
-       const buffer = await page.pdf(pdfOptions)
-       console.log(pdfOptions.path)
         await page.close()
         await browser.close()
-        return {
-            'buffer': buffer,
-            'pathName': pdfOptions.path
-        }
+        return buffer
     }
 
     catch(e){

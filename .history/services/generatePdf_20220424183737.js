@@ -59,10 +59,7 @@ const generatePdf = async (name, amount, initiativeName, groupName, gifterName, 
        console.log(pdfOptions.path)
         await page.close()
         await browser.close()
-        return {
-            'buffer': buffer,
-            'pathName': pdfOptions.path
-        }
+        return buffer
     }
 
     catch(e){

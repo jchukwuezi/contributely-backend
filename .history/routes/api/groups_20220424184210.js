@@ -245,7 +245,7 @@ router.post("/:groupId/:initiativeId/gift-donate", async (req, res)=>{
 
             const {pathName} = await generatePdf(name, amount, initiativeName.title, groupName.name)
             console.log(pathName)
-            sendGiftEmail(email, pathName, initiativeName.title, userName.name, goalAmount.goalAmount, amount, groupName.name)
+            //sendGiftEmail(email, gen, initiativeName.title, userName.name, goalAmount.goalAmount, amount, groupName.name)
 
             console.log(paymentIntent.client_secret)
             res.json({
