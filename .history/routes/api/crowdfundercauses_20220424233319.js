@@ -137,13 +137,11 @@ router.get("/common", async (req, res)=>{
                     const split = targetDays.split('target')
                     const target = split[0]
                     const daysLeft = split[1]
-                    /*
                     console.log(title)
                     console.log(target)
                     console.log(daysLeft)
-                    */
                     const articleText = ch('article.cf-section.cf-section--collapse-top').text()
-                    //console.log(articleText.substring(0, 250))
+                    console.log(articleText.substring(0, 250))
                     causeObj ={
                         "title": title,
                         "daysLeft": daysLeft,

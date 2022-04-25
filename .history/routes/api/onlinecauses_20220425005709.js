@@ -133,7 +133,7 @@ router.post("/collection/add/gfm", async (req, res)=>{
 router.post("/collection/add/cf", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessDonor){
-        const {target, url, title, category} = req.body
+        const {target, url, title, description, category} = req.body
         let targetNum = 0;
         //converting target string
         if (target.includes("stretch")){
@@ -142,14 +142,13 @@ router.post("/collection/add/cf", async(req, res)=>{
            const targetString = targetSplit.replace('£', '')
            targetNum = parseFloat(targetString)
         }
-        const targetString = target.replace('£', '')
-        targetNum = parseFloat(targetString)
+        targetNum = parseFloat(target)
         Donor.findById(req.session.donor.id).then(async (donor)=>{
             if(!donor){
                 console.log("No user was found.")
                 res.status(401).send('Unauthorized')
             }
-
+            
             else{
                 const newCause = new OnlineCause({
                     title: title,

@@ -142,8 +142,7 @@ router.post("/collection/add/cf", async(req, res)=>{
            const targetString = targetSplit.replace('£', '')
            targetNum = parseFloat(targetString)
         }
-        const targetString = target.replace('£', '')
-        targetNum = parseFloat(targetString)
+        targetNum = parseFloat(target)
         Donor.findById(req.session.donor.id).then(async (donor)=>{
             if(!donor){
                 console.log("No user was found.")
