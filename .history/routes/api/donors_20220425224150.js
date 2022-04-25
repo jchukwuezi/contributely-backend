@@ -85,8 +85,6 @@ router.get("http://localhost:4000/api/donors/verify/:donorId/:token", async (req
 
     //delete token
     await Token.findByIdAndRemove(token._id)
-
-    res.send("email verified successfully")
 })
 
 

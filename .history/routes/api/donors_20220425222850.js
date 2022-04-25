@@ -53,7 +53,7 @@ router.post("/register", (req, res) => {
 
                     const url = `http://localhost:4000/api/donors/verify/${newDonor._id}/${token.token}`
                     await sendVerificationEmail(newDonor.email, url)
-
+                    
                     .then(() => {
                         res.status(200).send({successful: 'Sucessfully registered'})
                     })
@@ -64,30 +64,6 @@ router.post("/register", (req, res) => {
     })
 })
 
-router.get("http://localhost:4000/api/donors/verify/:donorId/:token", async (req, res)=>{
-    const donorId = req.params.donorId
-    const donor = await Donor.findById(donorId)
-    if(!donor){
-        res.status(400).send("Invalid verification link")
-    }
-
-    const token = await Token.findOne({
-        donorId: donor._id,
-        token: req.params.token
-    })
-
-    if(!token){
-        res.status(400).send("Invalid verification link")
-    }
-
-    //update verification to true
-    await Donor.findByIdAndUpdate(donor._id, {verified: true})
-
-    //delete token
-    await Token.findByIdAndRemove(token._id)
-
-    res.send("email verified successfully")
-})
 
 
 router.post("/login", (req, res) => {

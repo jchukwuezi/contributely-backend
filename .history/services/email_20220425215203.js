@@ -183,8 +183,7 @@ const sendVerificationEmail = async (email, url) =>{
 module.exports = {
     sendStartEmail: sendStartEmail,
     sendEndEmail: sendEndEmail,
-    sendGiftEmail: sendGiftEmail,
-    sendVerificationEmail: sendVerificationEmail
+    sendGiftEmail: sendGiftEmail
 }
 
 
