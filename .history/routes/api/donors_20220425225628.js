@@ -52,7 +52,6 @@ router.post("/register", (req, res) => {
                     }).save()
 
                     const url = `http://localhost:4000/api/donors/verify/${newDonor._id}/${token.token}`
-                    console.log(url)
                     await sendVerificationEmail(newDonor.email, url)
 
                     .then(() => {
