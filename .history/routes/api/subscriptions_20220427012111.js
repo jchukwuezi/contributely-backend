@@ -78,20 +78,32 @@ router.get("/org/desc/:id", async (req, res)=>{
 
 router.post("/donor/end/:id", async (req, res)=>{
     const stripeSubId = req.params.id
-    const sub = await Subscription.findOne({stripeSubscriptionId: stripeSubId})
     const sessDonor = req.session.donor;
     if (sessDonor){
         //end subscription from stripe
         const endSub = await stripe.subscriptions.del(stripeSubId)
         console.log(endSub)
-        //set active equal to false
-        await Subscription.findOneAndUpdate({stripeSubscriptionId: stripeSubId},{active: false})
-        .catch((err)=>{
-            console.error(err)
-            res.send(err)
+        //remove it from donor's list
+        Donor.findOneAndUpdate({_id: req.session.donor.id}, {
+            $pull:{
+                'subscriptions': causeId
+            }
+        }, (err, model)=>{
+            if(!err){
+                //delete it from the subscription collection
+                Subscription.findOneAndRemove({stripeSubscriptionId: stripeSubId}, (err)=>{
+                    if(err){
+                        res.send(err)
+                    } 
+                    else{
+                        res.send('Successfully removed cause from collection')
+                    }
+                })
+            }
+            else{
+                res.status(500).send(err)
+            }
         })
-        
-        res.send("Subscription ended")
     }
     else{
         console.log("No user was found. This is funny because it works on post man")

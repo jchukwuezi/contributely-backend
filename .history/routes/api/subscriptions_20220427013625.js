@@ -90,7 +90,7 @@ router.post("/donor/end/:id", async (req, res)=>{
             console.error(err)
             res.send(err)
         })
-        
+
         res.send("Subscription ended")
     }
     else{
