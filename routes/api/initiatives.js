@@ -82,7 +82,14 @@ router.get("/get/:initiativeId", async(req, res)=> {
         .catch((err)=>{
             res.send({"closingError": err})
         })
-        res.send(initiative)
+
+        const donatedSoFar = initiative.donationHistory.reduce((n, {amount}) => n + amount, 0)
+        console.log("Amount dontated so far")
+        console.log(donatedSoFar)
+        res.send({
+            "initiativeData": initiative,
+            "donatedSoFar": donatedSoFar
+        })
     }
 
     else{

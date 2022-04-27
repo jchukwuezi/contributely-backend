@@ -89,7 +89,7 @@ router.get("/interests", async (req, res)=>{
         }
 
         else{
-            console.log("no interests that match the global giving themes found for this user")
+            console.log("no interests found for this user")
             return res.send([])
         }
     }
