@@ -50,9 +50,11 @@ router.post("/register", (req, res) => {
                         donorId: newDonor._id,
                         token: crypto.randomBytes(32).toString("hex")
                     }).save()
+
                     const url = `http://localhost:4000/api/donors/verify/${newDonor._id}/${token.token}`
                     console.log(url)
                     await sendVerificationEmail(newDonor.email, url)
+
                     .then(() => {
                         res.status(200).send({successful: 'Sucessfully registered'})
                     })
@@ -323,18 +325,22 @@ router.get("/categories-donated", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessDonor){
         let allTags = []
+        //find all of the categories, lowercase them and add them to a list
         const transactions = await Donor.findById(req.session.donor.id).populate("transactions")
         .catch((err)=>{
             res.send(err)
         })
 
         for (let i=0; i<transactions.transactions.length; i++){
+           //console.log(transactions.transactions[i].initiativeTags)
            for (let j =0; j<transactions.transactions[i].initiativeTags.length; j++){
                allTags.push(transactions.transactions[i].initiativeTags[j])
            }
+           //allTags.push(transactions.transactions[i].initiativeTags)
         }
 
         console.log(allTags)
+        //find the occurrences of each category and put it in an map (array of object)
         const count = {}
         for (const elem of allTags){
             if(count[elem]){

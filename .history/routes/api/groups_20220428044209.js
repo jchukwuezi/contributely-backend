@@ -403,13 +403,24 @@ router.get("/list-status/:groupId", async(req, res)=>{
     const groupId = req.params.groupId;
     const sessDonor = req.session.donor;
     if (sessDonor){
+        let memberStatus = false;
+        const memberQuery = await Donor.find({
+            groupsNotifiedBy:{
+                $elemMatch: {_id: groupId}
+            }
+        })
+        console.log("Printing out member status query")
+        console.log(memberQuery)
+        if (memberQuery.length > 0){
+            memberStatus = true
+        }
         const status = await Donor.exists({groupsNotifiedBy : {$elemMatch: {$eq: groupId}}})
         .catch((err)=>{
             console.log(err)
         })
         console.log("Member status")
         console.log(status)
-        res.send({"memberStatus": status})
+        res.send({"memberStatus": memberStatus})
     }
     
     else{

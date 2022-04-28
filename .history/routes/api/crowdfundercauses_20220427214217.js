@@ -5,9 +5,8 @@ const puppeteer = require('puppeteer')
 const router = express.Router()
 const {CrowdfunderCategories, commonThemes} = require('../../data/cause-categories')
 const Donor = require("../../models/Donor")
+
 const base_url = 'https://www.crowdfunder.co.uk/search/projects?'
-
-
 router.get("/get", async (req, res) =>{
     const sessDonor = req.session.donor;
     if(sessDonor){
@@ -16,10 +15,7 @@ router.get("/get", async (req, res) =>{
         const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
         if(interests.interests.length === 0){
             console.log("no interests found for this user")
-            return res.send({
-                "category": "",
-                "causeInfo": []
-            })
+            return res.send([])
         }
         const cfThemes = [...CrowdfunderCategories.keys()]
         //intersection between user interests and Crowdfunder categories

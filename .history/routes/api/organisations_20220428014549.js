@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router();
 const Organisation = require('../../models/Organisation')
+const Initiative = require('../../models/Initiative')
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
-
+const randomstring = require('randomstring')
 
 //to register an organisation
 router.post("/register", (req, res) => {
@@ -58,6 +59,10 @@ router.post("/register", (req, res) => {
                     console.log(account)
                     //save new organisation
                     newOrg.stripeAccountId = account.id
+                    newOrg.groupCode = randomstring.generate({
+                        length: 5,
+                        charset: 'alphanumeric'
+                    })
                     await newOrg.save()
                     res.send(account)
                     /*
@@ -127,11 +132,19 @@ router.post("/login", (req, res) => {
 
 router.post("/activate-stripe", async (req, res) => {
     //const id = req.params.orgId;
-    await Organisation.updateOne({_id: req.session.org.id}, {stripeActivationStatus: true})
-    .catch((err)=>{
-        res.status(404).send(err)
-    })
-    res.send('Stripe onboarding successful')
+    const stripeStatus = await Organisation.findById(req.session.org.id).select({_id:0, stripeActivationStatus:1})
+    console.log(stripeStatus)
+    if (stripeStatus) {
+        await Organisation.findByIdAndUpdate(req.session.org.id, {stripeActivationStatus: true})
+        .catch((err)=>{
+            res.status(404).send(err)
+        })
+        res.send('Stripe onboarding successful')
+    }
+    
+    else{
+        res.status(409).send('Organisation has already onboarded on stripe')
+    }
 })
 
 router.get("/stripe-status", async (req, res) => {
@@ -163,6 +176,174 @@ router.get("/auth/org", (req, res) => {
         res.status(401).send('Unauthorized')
     }
 })
+
+
+router.get("/available-balance", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const stripeId = await Organisation.findById(req.session.org.id).select({_id:0, stripeAccountId:1})
+        const accountBalance = await stripe.balance.retrieve({
+            stripeAccount: stripeId.stripeAccountId
+        })
+        .catch((err)=>{
+            res.send(err)
+        })
+        const trueBalance = accountBalance.available.reduce((n, {amount})=> n+amount, 0)
+        console.log(trueBalance/100)
+        res.send({"trueBalance": trueBalance/100})
+    }   
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+router.get("/pending-balance", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const stripeId = await Organisation.findById(req.session.org.id).select({_id:0, stripeAccountId:1})
+        const accountBalance = await stripe.balance.retrieve({
+            stripeAccount: stripeId.stripeAccountId
+        })
+        .catch((err)=>{
+            res.send(err)
+        })
+        const pendingBalance = accountBalance.pending.reduce((n, {amount})=> n+amount, 0)
+        console.log(pendingBalance/100)
+        res.send({"pendingBalance" : pendingBalance/100})
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/contribution-total", async (req, res) =>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const activeInitiatives =  await Initiative.find({})
+        .where('organisation').equals(req.session.org.id)
+        let totals = []
+        activeInitiatives.forEach((initiative)=>{
+            const total = initiative.donationHistory.reduce((n, {amount}) => n + amount, 0)
+            totals.push(total)
+        })
+        console.log(totals)
+        const contributionTotal = totals.reduce((a, b) => a + b, 0)
+        console.log(contributionTotal)
+        res.send({"amount": contributionTotal})
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/initiative-categories", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        let allTags = []
+
+        const initiatives =  await Initiative.find({})
+        .where('organisation').equals(req.session.org.id)
+
+        console.log(initiatives)
+
+        for(let i=0; i<initiatives.length; i++){
+            for(let j=0; j<initiatives[i].tags.length; j++){
+                allTags.push(initiatives[i].tags[j])
+            }
+        }
+
+        console.log(allTags)
+        const count = {}
+        for (const elem of allTags){
+            if(count[elem]){
+                count[elem] += 1;
+            }
+            else{
+                count[elem] = 1
+            }
+        }
+        console.log(count)
+        console.log(Object.keys(count))
+        console.log(Object.values(count))
+        //put it into the piechart on client side 
+        res.send({
+            categoryKeys: Object.keys(count),
+            categoryValues: Object.values(count)
+        }) 
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/subscribers", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+
+router.get("/initiative-count", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const activeInitiatives =  await Initiative.find({})
+        .where('organisation').equals(req.session.org.id)
+        .catch((err)=>{
+            res.send(err)
+        })
+        console.log(activeInitiatives.length)
+        res.send({"count": activeInitiatives.length})
+    }
+    
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/contribution-count", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const activeInitiatives =  await Initiative.find({})
+        .where('organisation').equals(req.session.org.id)
+        .catch((err)=>{
+            res.send(err)
+        })
+        let donationNos = []
+        activeInitiatives.forEach((initiative)=>{
+            const history = initiative.donationHistory.length
+            donationNos.push(history)
+        })
+        const totalDonationNo = donationNos.reduce((a, b) => a + b, 0)
+        console.log(totalDonationNo)
+        res.send({"count": totalDonationNo})
+        //console.log(activeInitiatives.length())
+        //res.send(activeInitiatives.length())
+    }
+    
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+
+
+
+
 
 //for logging out
 router.delete("/logout", (req, res) => {

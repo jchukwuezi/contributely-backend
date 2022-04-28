@@ -16,10 +16,7 @@ router.get("/get", async (req, res) =>{
         const interests = await Donor.findById(req.session.donor.id).select({_id:0, interests:1})
         if(interests.interests.length === 0){
             console.log("no interests found for this user")
-            return res.send({
-                "category": "",
-                "causeInfo": []
-            })
+            return res.send([])
         }
         const cfThemes = [...CrowdfunderCategories.keys()]
         //intersection between user interests and Crowdfunder categories

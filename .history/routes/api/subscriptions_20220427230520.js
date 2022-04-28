@@ -86,7 +86,7 @@ router.post("/donor/end/:id", async (req, res)=>{
         const endSub = await stripe.subscriptions.del(stripeSubId)
         console.log(endSub)
         //set active equal to false
-        await Subscription.findOneAndUpdate({stripeSubscriptionId: stripeSubId},{active: false}, {endDate: Date.now()})
+        await Subscription.findOneAndUpdate({stripeSubscriptionId: stripeSubId},{active: false}, {closingDate: Date.now()})
         .catch((err)=>{
             console.error(err)
             res.send(err)
@@ -122,7 +122,6 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
             .where('amount').equals(amountInEuro)
             .where('interval').equals(req.body.interval)
             .where('organisation').equals(groupId)
-            .where('active').equals(true)
             .catch((err)=>{
                 res.send({"existingError": err})
             })

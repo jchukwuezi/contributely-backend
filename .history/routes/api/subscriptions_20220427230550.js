@@ -122,7 +122,6 @@ router.post("/donor/subscribe/:groupId", async (req, res)=>{
             .where('amount').equals(amountInEuro)
             .where('interval').equals(req.body.interval)
             .where('organisation').equals(groupId)
-            .where('active').equals(true)
             .catch((err)=>{
                 res.send({"existingError": err})
             })

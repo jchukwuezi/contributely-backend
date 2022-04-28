@@ -50,9 +50,11 @@ router.post("/register", (req, res) => {
                         donorId: newDonor._id,
                         token: crypto.randomBytes(32).toString("hex")
                     }).save()
+
                     const url = `http://localhost:4000/api/donors/verify/${newDonor._id}/${token.token}`
                     console.log(url)
                     await sendVerificationEmail(newDonor.email, url)
+
                     .then(() => {
                         res.status(200).send({successful: 'Sucessfully registered'})
                     })
