@@ -48,7 +48,7 @@ const sendStartEmail = async (groupName, initiativeTitle, goalAmount, ...mailing
     })
 }
 
-const sendEndEmail = async (groupName, initiativeTitle, closingBalance, ...mailingList) =>{
+const sendEndEmail = async (groupName, initiativeTitle, ...mailingList) =>{
     console.log('Mail test')
     //const emails = await mailingList.notificationList.map(a => a.email)
     console.log(mailingList)
@@ -76,7 +76,7 @@ const sendEndEmail = async (groupName, initiativeTitle, closingBalance, ...maili
     const mailingOptions = {
         from: '"Contributely" <ccontributely@gmail.com>',
         to: mailingList,
-        subject: 'Initiative Ended',
+        subject: 'Initiative Start !',
         template: 'initiativeEnd',
         context:{
             groupName: groupName,

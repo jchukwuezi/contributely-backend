@@ -320,43 +320,18 @@ router.get("/details", async (req, res)=>{
     }
 })
 
-router.post("/update", async(req, res)=>{
+router.get("/update", async(req, res)=>{
     const {description, tags} = req.body
     const sessOrg = req.session.org;
     if (sessOrg){
-        //if there is both a description and tags
-        if (tags.length > 0 && description != ""){
-            await Organisation.findByIdAndUpdate(req.session.org.id, {description: description}, {
-                $addToSet: {
-                    tags: 
-                    {
-                        $each : tags
-                    }
+        await Organisation.findByIdAndUpdate(req.session.org.id, {description: description}, {
+            $addToSet: {
+                tags: 
+                {
+                    $each : tags
                 }
-            })
-            res.send("Orgainsation successfuly updated")
-        }
-
-        //if there is only a description
-        else if(tags.length === 0 && description != ""){
-            await Organisation.findByIdAndUpdate(req.session.org.id, {description: description})
-            res.send("Orgainsation successfuly updated")
-        }
-
-        //if there are only tags
-        else if (tags.length > 0 && description === ""){
-            await Organisation.findByIdAndUpdate(req.session.org.id, {
-                $addToSet: {
-                    tags: 
-                    {
-                        $each : tags
-                    }
-                }
-            })
-            res.send("Orgainsation successfuly updated")
-        }
-
-        res.send("Fields not filled, cannot update blank values")
+            }
+        })
     }
     else{
         console.log("No user was found.")

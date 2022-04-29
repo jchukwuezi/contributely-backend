@@ -47,10 +47,7 @@ router.post("/add", (req, res) => {
                 })
                 console.log(mailingList.notificationList)
                 //console.log(mailingList.notificationList.map(a => a.email))
-                if (mailingList.notificationList.length > 0){
-                    sendStartEmail(org.name, title, goalAmount, mailingList.notificationList.map(a => a.email))
-                }
-                console.log('Initiative started but no donors have joined the notification list')
+                sendStartEmail(org.name, title, goalAmount, mailingList.notificationList.map(a => a.email))
                 res.status(200).send({successful: 'Initiative successfully created'})
             }
         })
@@ -158,10 +155,7 @@ router.post("/close/:initiativeId", async(req, res)=>{
         })
         console.log(mailingList.notificationList)
         //console.log(mailingList.notificationList.map(a => a.email))
-        if (mailingList.notificationList.length > 0){
-            sendEndEmail(name.name, title.title, balance, mailingList.notificationList.map(a => a.email))
-        }
-        console.log('Initiative closed but no donors have joined the notification list')
+        sendEndEmail(name.name, title.title, balance, mailingList.notificationList.map(a => a.email))
         res.send('Initiative closed successfully')
     }
 

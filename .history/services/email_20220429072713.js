@@ -76,7 +76,7 @@ const sendEndEmail = async (groupName, initiativeTitle, closingBalance, ...maili
     const mailingOptions = {
         from: '"Contributely" <ccontributely@gmail.com>',
         to: mailingList,
-        subject: 'Initiative Ended',
+        subject: 'Initiative Start !',
         template: 'initiativeEnd',
         context:{
             groupName: groupName,

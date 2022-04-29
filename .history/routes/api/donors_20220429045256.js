@@ -318,13 +318,6 @@ router.get("/notifiedBy", async(req, res)=>{
             console.log(err)
             res.send(err)
         })
-
-        if(list.groupsNotifiedBy.length === 0){
-            res.send({
-                "groupsNotifiedBy": []
-            })
-        }
-        
         res.send({
             "groupsNotifiedBy": list.groupsNotifiedBy
         })

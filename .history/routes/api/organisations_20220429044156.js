@@ -305,64 +305,6 @@ router.get("/notification-list", async (req, res)=>{
     }
 })
 
-router.get("/details", async (req, res)=>{
-    const sessOrg = req.session.org;
-    if (sessOrg){
-        const org = await Organisation.findById(req.session.org.id)
-        .catch((err)=>{
-            res.send(err)
-        })
-        res.send({"org": org})
-    }
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.post("/update", async(req, res)=>{
-    const {description, tags} = req.body
-    const sessOrg = req.session.org;
-    if (sessOrg){
-        //if there is both a description and tags
-        if (tags.length > 0 && description != ""){
-            await Organisation.findByIdAndUpdate(req.session.org.id, {description: description}, {
-                $addToSet: {
-                    tags: 
-                    {
-                        $each : tags
-                    }
-                }
-            })
-            res.send("Orgainsation successfuly updated")
-        }
-
-        //if there is only a description
-        else if(tags.length === 0 && description != ""){
-            await Organisation.findByIdAndUpdate(req.session.org.id, {description: description})
-            res.send("Orgainsation successfuly updated")
-        }
-
-        //if there are only tags
-        else if (tags.length > 0 && description === ""){
-            await Organisation.findByIdAndUpdate(req.session.org.id, {
-                $addToSet: {
-                    tags: 
-                    {
-                        $each : tags
-                    }
-                }
-            })
-            res.send("Orgainsation successfuly updated")
-        }
-
-        res.send("Fields not filled, cannot update blank values")
-    }
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
 
 router.get("/initiative-count", async (req, res)=>{
     const sessOrg = req.session.org;

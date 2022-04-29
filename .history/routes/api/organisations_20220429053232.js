@@ -320,7 +320,7 @@ router.get("/details", async (req, res)=>{
     }
 })
 
-router.post("/update", async(req, res)=>{
+router.get("/update", async(req, res)=>{
     const {description, tags} = req.body
     const sessOrg = req.session.org;
     if (sessOrg){
@@ -355,7 +355,7 @@ router.post("/update", async(req, res)=>{
             })
             res.send("Orgainsation successfuly updated")
         }
-
+        
         res.send("Fields not filled, cannot update blank values")
     }
     else{

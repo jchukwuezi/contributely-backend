@@ -47,10 +47,7 @@ router.post("/add", (req, res) => {
                 })
                 console.log(mailingList.notificationList)
                 //console.log(mailingList.notificationList.map(a => a.email))
-                if (mailingList.notificationList.length > 0){
-                    sendStartEmail(org.name, title, goalAmount, mailingList.notificationList.map(a => a.email))
-                }
-                console.log('Initiative started but no donors have joined the notification list')
+                sendStartEmail(org.name, title, goalAmount, mailingList.notificationList.map(a => a.email))
                 res.status(200).send({successful: 'Initiative successfully created'})
             }
         })
@@ -136,16 +133,14 @@ router.post("/close/:initiativeId", async(req, res)=>{
     const initiativeId = req.params.initiativeId
     const sessOrg = req.session.org;
     const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
-    const title = await Initiative.findOne({_id:initiativeId}).select({_id:0, title:1})
     const history = donations.donationHistory
     const balance = history.reduce((n, {amount}) => n + amount, 0)
     if(sessOrg){
-    
-    const close = await Initiative.findByIdAndUpdate(initiativeId, {$set:{closingDate: Date.now(), active: false, closingBalance: balance}})
+        await Initiative.findOneAndUpdate({_id:initiativeId}, {closingDate: Date.now()}, {active: false}, {closingBalance: balance})
         .catch((err)=>{
             res.send({"closingError": err})
         })
-    console.log(close)
+        
         //an email will be sent to update the members of this group
         const name = await Organisation.findById(req.session.org.id).select({_id:0, name:1})
         const mailingList = await Organisation.findById(req.session.org.id).populate({
@@ -158,11 +153,9 @@ router.post("/close/:initiativeId", async(req, res)=>{
         })
         console.log(mailingList.notificationList)
         //console.log(mailingList.notificationList.map(a => a.email))
-        if (mailingList.notificationList.length > 0){
-            sendEndEmail(name.name, title.title, balance, mailingList.notificationList.map(a => a.email))
-        }
-        console.log('Initiative closed but no donors have joined the notification list')
-        res.send('Initiative closed successfully')
+        sendEndEmail(name.name, title, goalAmount, mailingList.notificationList.map(a => a.email))
+
+        return res.send('Initiative closed successfully')
     }
 
     else{

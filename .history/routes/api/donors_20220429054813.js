@@ -324,7 +324,6 @@ router.get("/notifiedBy", async(req, res)=>{
                 "groupsNotifiedBy": []
             })
         }
-        
         res.send({
             "groupsNotifiedBy": list.groupsNotifiedBy
         })

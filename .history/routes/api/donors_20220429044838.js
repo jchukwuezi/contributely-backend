@@ -312,19 +312,12 @@ router.get("/notifiedBy", async(req, res)=>{
     if (sessDonor){
         const list = await Donor.findById(req.session.donor.id).populate({
             path: 'groupsNotifiedBy',
-            select: 'name description tags _id'
+            select: 'name description tags -_id'
         })
         .catch((err)=>{
             console.log(err)
             res.send(err)
         })
-
-        if(list.groupsNotifiedBy.length === 0){
-            res.send({
-                "groupsNotifiedBy": []
-            })
-        }
-        
         res.send({
             "groupsNotifiedBy": list.groupsNotifiedBy
         })
@@ -335,8 +328,6 @@ router.get("/notifiedBy", async(req, res)=>{
         res.status(401).send('Unauthorized')
     }
 })
-
-
 
 router.get("/categories-donated", async(req, res)=>{
     const sessDonor = req.session.donor;
