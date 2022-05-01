@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router();
 const Initiative = require('../../models/Initiative')
 const Organisation = require('../../models/Organisation')
+const {sendStartEmail, sendEndEmail} = require('../../services/email')
+const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
 
 router.post("/add", (req, res) => {
@@ -34,9 +36,21 @@ router.post("/add", (req, res) => {
                 await org.update({
                     $push: {initiativeList: newInitiative._id}
                 });
-
                 //an email to update members that are part of the email list
-
+                const mailingList = await Organisation.findById(req.session.org.id).populate({
+                    path: 'notificationList',
+                    select: 'email -_id'
+                })
+                .catch((err)=>{
+                    console.log(err)
+                    res.send(err)
+                })
+                console.log(mailingList.notificationList)
+                //console.log(mailingList.notificationList.map(a => a.email))
+                if (mailingList.notificationList.length > 0){
+                    sendStartEmail(org.name, title, goalAmount, mailingList.notificationList.map(a => a.email))
+                }
+                console.log('Initiative started but no donors have joined the notification list')
                 res.status(200).send({successful: 'Initiative successfully created'})
             }
         })
@@ -71,7 +85,14 @@ router.get("/get/:initiativeId", async(req, res)=> {
         .catch((err)=>{
             res.send({"closingError": err})
         })
-        res.send(initiative)
+
+        const donatedSoFar = initiative.donationHistory.reduce((n, {amount}) => n + amount, 0)
+        console.log("Amount dontated so far")
+        console.log(donatedSoFar)
+        res.send({
+            "initiativeData": initiative,
+            "donatedSoFar": donatedSoFar
+        })
     }
 
     else{
@@ -80,40 +101,45 @@ router.get("/get/:initiativeId", async(req, res)=> {
     }
 })
 
-//route to update balance
-router.patch("/update-balance/:initiativeId", async (req, res) => {
+router.get("/balance/:initiativeId", async (req, res)=>{
     const initiativeId = req.params.initiativeId
-    const sessOrg = req.session.org;
-    if (sessOrg){
-        const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
-        const history = donations.donationHistory
-        const balance = history.reduce((n, {amount}) => n + amount, 0)
-        const value = await Initiative.findByIdAndUpdate(initiativeId, {$set: {amountToDateDonated: balance}})
-        .catch((err)=>{
-            res.send(error)
-        })
-        res.send(value)
-        console.log(value)
-    }
-
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
+    const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
+    const history = donations.donationHistory
+    const balance = history.reduce((n, {amount}) => n + amount, 0)
+    res.send(balance)
 })
 
 //route to close an initiative
 router.post("/close/:initiativeId", async(req, res)=>{
     const initiativeId = req.params.initiativeId
     const sessOrg = req.session.org;
+    const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
+    const title = await Initiative.findOne({_id:initiativeId}).select({_id:0, title:1})
+    const history = donations.donationHistory
+    const balance = history.reduce((n, {amount}) => n + amount, 0)
     if(sessOrg){
-        await Initiative.findByIdAndUpdate(initiativeId, {closingDate: Date.now()}, {active: false})
-            .catch((err)=>{
-                return res.send({"closingError": err})
-            })
-
-        return res.send('Initiative closed successfully')
+    const close = await Initiative.findByIdAndUpdate(initiativeId, {$set:{closingDate: Date.now(), active: false, closingBalance: balance}})
+        .catch((err)=>{
+            res.send({"closingError": err})
+        })
+    console.log(close)
         //an email will be sent to update the members of this group
+        const name = await Organisation.findById(req.session.org.id).select({_id:0, name:1})
+        const mailingList = await Organisation.findById(req.session.org.id).populate({
+            path: 'notificationList',
+            select: 'email -_id'
+        })
+        .catch((err)=>{
+            console.log(err)
+            res.send(err)
+        })
+        console.log(mailingList.notificationList)
+        //console.log(mailingList.notificationList.map(a => a.email))
+        if (mailingList.notificationList.length > 0){
+            sendEndEmail(name.name, title.title, balance, mailingList.notificationList.map(a => a.email))
+        }
+        console.log('Initiative closed but no donors have joined the notification list')
+        res.send('Initiative closed successfully')
     }
 
     else{
@@ -153,4 +179,7 @@ router.get("/:title", (req, res) => {
         res.status(401).send('Unauthorized')
     }
 })
+
+
+
 module.exports = router;

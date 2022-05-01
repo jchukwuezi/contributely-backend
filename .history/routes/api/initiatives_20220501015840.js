@@ -101,6 +101,28 @@ router.get("/get/:initiativeId", async(req, res)=> {
     }
 })
 
+//route to update balance
+router.patch("/update-balance/:initiativeId", async (req, res) => {
+    const initiativeId = req.params.initiativeId
+    const sessOrg = req.session.org;
+    if (sessOrg){
+        const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
+        const history = donations.donationHistory
+        const balance = history.reduce((n, {amount}) => n + amount, 0)
+        const value = await Initiative.findByIdAndUpdate(initiativeId, {$set: {amountToDateDonated: balance}})
+        .catch((err)=>{
+            res.send(error)
+        })
+        res.send(value)
+        console.log(value)
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
 router.get("/balance/:initiativeId", async (req, res)=>{
     const initiativeId = req.params.initiativeId
     const donations = await Initiative.findOne({_id:initiativeId}).select({_id:0, donationHistory:1})
@@ -118,6 +140,7 @@ router.post("/close/:initiativeId", async(req, res)=>{
     const history = donations.donationHistory
     const balance = history.reduce((n, {amount}) => n + amount, 0)
     if(sessOrg){
+    
     const close = await Initiative.findByIdAndUpdate(initiativeId, {$set:{closingDate: Date.now(), active: false, closingBalance: balance}})
         .catch((err)=>{
             res.send({"closingError": err})
@@ -147,6 +170,39 @@ router.post("/close/:initiativeId", async(req, res)=>{
         res.status(401).send('Unauthorized')
     }
 })
+
+router.get("/:title", (req, res) => {
+    const sessOrg = req.session.org;
+
+    if (sessOrg){
+        Initiative.findOne({title: req.params.title})
+        .populate('initiativeList')
+        .exec( (err, initiative) => {
+            if(!err){
+                res.send(initiative)
+            }
+
+            else{
+                //checking the type of error
+                if(err.kind === 'ObjectId'){
+                    return res.status(404).send({
+                        message: "Initiatives not found with given title " + req.params.title
+                    }); 
+                }
+
+                return res.status(500).send({
+                    message: "Error retrieving Initiatives with title " + req.params.title
+                }); 
+            }
+        })
+    }
+
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
 
 
 module.exports = router;

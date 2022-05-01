@@ -27,6 +27,11 @@ const DonorSchema = new mongoose.Schema({
         required: true
     },
 
+    verified:{
+        type: Boolean,
+        default: false
+    },
+
     image:{
         type: String
     },
@@ -39,6 +44,15 @@ const DonorSchema = new mongoose.Schema({
     interests: [
         
     ],
+
+    stripeCustomerId: {
+        type: String,
+        required: true
+    },
+
+    stripePaymentMethodId:{
+        type: String
+    },
 
     //list of any causes that they may be interested in
     causeCollection: [
@@ -53,7 +67,7 @@ const DonorSchema = new mongoose.Schema({
             amount: {type: Number},
             date:{
                 type: Date,
-                default: Date.now()
+                default: Date.now
             },
             groupName:{
                 type: String
@@ -61,6 +75,43 @@ const DonorSchema = new mongoose.Schema({
             initiativeTags:[
 
             ]
+        }
+    ],
+
+    giftContributions:[
+        {
+            amount: {type: Number},
+            date:{
+                type: Date,
+                default: Date.now
+            },
+            onBehalfOf:{
+                type: String
+            },
+            groupName:{
+                type: String
+            },
+            initiativeName:{
+                type: String
+            },
+            
+            initiativeTags:[
+
+            ]
+        }
+    ],
+
+    groupsNotifiedBy: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Organisation'
+        }
+    ],
+    
+    subscriptions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subscription'
         }
     ]
         

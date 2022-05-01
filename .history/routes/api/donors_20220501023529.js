@@ -270,16 +270,8 @@ router.get("/amount-contributed", async(req, res)=>{
         .catch((err)=>{
             res.send(err)
         })
-
-        const giftContributions = await Donor.findById(req.session.donor.id).select({_id:0, giftContributions:1})
-        .catch((err)=>{
-            res.send(err)
-        })
-
         const amount = donations.transactions.reduce((n, {amount}) => n + amount, 0)
-        const gift = giftContributions.giftContributions.reduce((n, {amount}) => n + amount, 0)
-        const totalAmount = amount + gift;
-        res.send({"amount": totalAmount})
+        res.send({"amount": amount})
     }
     
     else{
@@ -315,33 +307,6 @@ router.get("/amount-gifted", async(req, res)=>{
         const amount = gifts.giftContributions.reduce((n, {amount}) => n + amount, 0)
         res.send({"amount": amount})
     }
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
-router.get("/recent-transactions", async(req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        const list = await Donor.findById(req.session.donor.id).populate('transactions')
-        .catch((err)=>{
-            console.log(err)
-            res.send(err)
-        })
-
-        if(list.transactions.length === 0){
-            res.send({
-                "transactions": []
-            })
-        }
-        else{
-            res.send({
-                "transactions": list.transactions
-            })
-        }
-    }
-
     else{
         console.log("No user was found.")
         res.status(401).send('Unauthorized')

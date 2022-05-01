@@ -22,10 +22,6 @@ router.get("/org/get", async (req, res)=>{
 router.get("/donor/all", async(req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
-        const activeSubs = await Subscription.find({})
-        .where('donor').equals(req.session.donor.id)
-        .where('active').equals(true)
-
         const subs = await Subscription.find({})
         .where('donor').equals(req.session.donor.id)
         .populate(
@@ -37,8 +33,8 @@ router.get("/donor/all", async(req, res)=>{
         .catch((err)=>{
             res.send(err)
         })
+        const subCount = subs.length;
         console.log(subs)
-        const subCount = activeSubs.length
         //res.send(subs)
         res.json({
             "subs": subs,

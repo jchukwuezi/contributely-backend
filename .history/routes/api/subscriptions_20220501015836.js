@@ -22,10 +22,6 @@ router.get("/org/get", async (req, res)=>{
 router.get("/donor/all", async(req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
-        const activeSubs = await Subscription.find({})
-        .where('donor').equals(req.session.donor.id)
-        .where('active').equals(true)
-
         const subs = await Subscription.find({})
         .where('donor').equals(req.session.donor.id)
         .populate(
@@ -37,8 +33,8 @@ router.get("/donor/all", async(req, res)=>{
         .catch((err)=>{
             res.send(err)
         })
+        const subCount = subs.length;
         console.log(subs)
-        const subCount = activeSubs.length
         //res.send(subs)
         res.json({
             "subs": subs,
@@ -84,23 +80,20 @@ router.get("/org/desc/:id", async (req, res)=>{
 })
 
 router.post("/donor/end/:id", async (req, res)=>{
-    //const stripeSubId = req.params.id
-    const subId = req.params.id
+    const stripeSubId = req.params.id
+    const sub = await Subscription.findOne({stripeSubscriptionId: stripeSubId})
     const sessDonor = req.session.donor;
     if (sessDonor){
-        const sub = await Subscription.findById(subId)
         //end subscription from stripe
-        const endSub = await stripe.subscriptions.del(sub.stripeSubscriptionId)
+        const endSub = await stripe.subscriptions.del(stripeSubId)
         console.log(endSub)
-        /*
         //set active equal to false
         await Subscription.findOneAndUpdate({stripeSubscriptionId: stripeSubId},{active: false}, {endDate: Date.now()})
         .catch((err)=>{
             console.error(err)
             res.send(err)
         })
-        */
-        await Subscription.findByIdAndUpdate(sub._id, {$set:{endDate: Date.now(), active: false}})
+        
         res.send("Subscription ended")
     }
     else{

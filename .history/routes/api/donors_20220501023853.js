@@ -321,33 +321,6 @@ router.get("/amount-gifted", async(req, res)=>{
     }
 })
 
-router.get("/recent-transactions", async(req, res)=>{
-    const sessDonor = req.session.donor;
-    if (sessDonor){
-        const list = await Donor.findById(req.session.donor.id).populate('transactions')
-        .catch((err)=>{
-            console.log(err)
-            res.send(err)
-        })
-
-        if(list.transactions.length === 0){
-            res.send({
-                "transactions": []
-            })
-        }
-        else{
-            res.send({
-                "transactions": list.transactions
-            })
-        }
-    }
-
-    else{
-        console.log("No user was found.")
-        res.status(401).send('Unauthorized')
-    }
-})
-
 router.get("/notifiedBy", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessDonor){
