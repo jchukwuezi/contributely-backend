@@ -201,12 +201,12 @@ const sendContributionEmail = async (email, pathName, amount, initiativeTitle, g
 
     const mailingOptions = {
         from: '"Contributely" <ccontributely@gmail.com>',
-        to: address,
+        to: email,
         subject: 'You have just made a contribution',
         template: 'noauthDonationEmail',
         context:{
             groupName: groupName,
-            initiativeTitle: initiativeName,
+            initiativeTitle: initiativeTitle,
             amount: amount, 
             goalAmount: goalAmount
         },

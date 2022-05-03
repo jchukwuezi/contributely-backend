@@ -46,8 +46,12 @@ router.get("/:groupId/initiatives", async (req, res)=>{
 //this is route will show a donor that isn't logged in a groups initiatives
 router.get("/:groupCode/initiatives-na", async(req, res)=>{
     const groupCode = req.params.groupCode;
+    const initiativeName = await Organisation.findOne({groupCode: groupCode}).select({_id:0, name:1})
     const foundInitiatives = await Organisation.findOne({groupCode: groupCode}).populate("initiativeList")
-    res.json(foundInitiatives.initiativeList)
+    res.json({
+        "initiatives": foundInitiatives.initiativeList,
+        "groupName": initiativeName.name
+    })
 })
 
 router.get("/:groupCode/initiatives/:initiativeId-na", async (req, res)=>{
@@ -271,6 +275,7 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
     const initiativeId = req.params.initiativeId
     //finding the group and initiative name for metadata section
     const orgStripeId = await Organisation.findOne({groupCode:groupCode}).select({_id:0, stripeAccountId:1})
+    const goalAmount = await Initiative.findById(initiativeId).select({_id:0, goalAmount:1})
     const groupName = await Organisation.findOne({groupCode:groupCode}).select({_id:0, name:1})
     console.log(orgStripeId, groupName)
     const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
@@ -301,7 +306,7 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
             metadata:{
                 initiativeName: initiativeName.title,
                 groupName: groupName.name,
-                inTheNameOf: onBehalfOf,
+                name: name,
                 amount: amount,
                 email: email
             }
