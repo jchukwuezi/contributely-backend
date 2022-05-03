@@ -4,8 +4,8 @@ const router = express.Router();
 const Initiative = require('../../models/Initiative')
 const Organisation = require('../../models/Organisation')
 const Donor = require('../../models/Donor')
-const {generatePdf} = require('../../services/generatePdf')
-const {sendGiftEmail} = require('../../services/email')
+const {generatePdf, generateContribution} = require('../../services/generatePdf')
+const {sendGiftEmail, sendContributionEmail} = require('../../services/email')
 const groups = []
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
 
@@ -274,13 +274,13 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
     const groupName = await Organisation.findOne({groupCode:groupCode}).select({_id:0, name:1})
     console.log(orgStripeId, groupName)
     const initiativeName = await Initiative.findById(initiativeId).select({_id:0, title:1})
-    const {onBehalfOf, amount, email} = req.body;
+    const {name, amount, email} = req.body;
     try{
         amountInCent = amount * 100;
         const paymentInfo = {
             initiativeName: initiativeName.title,
             groupName: groupName.name,
-            inTheNameOf: onBehalfOf,
+            inTheNameOf: name,
             amount: amount,
             email: email
         }
@@ -288,6 +288,7 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
         const donation = {
             amount: amount,
             email: email,
+            name: name
         }
         const paymentIntent = await stripe.paymentIntents.create({
             payment_method_types: ['card'],
@@ -309,6 +310,11 @@ router.post("/:groupCode/:initiativeId/donate-na", async(req, res)=>{
             $push: {donationHistory: donation}
         })
         console.log(paymentIntent.client_secret)
+
+        const {pathName} = await generateContribution(name, amount, initiativeName.title, groupName.name)
+        console.log(pathName)
+        sendContributionEmail(email, pathName, amount, initiativeName.title, goalAmount.goalAmount, groupName.name)
+
         res.json({
             clientSecret: paymentIntent.client_secret,
             paymentInfo: paymentInfo

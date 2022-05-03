@@ -4,7 +4,8 @@ const Organisation = require('../../models/Organisation')
 const Initiative = require('../../models/Initiative')
 const bcrypt = require('bcryptjs')
 const stripe = require('stripe')(process.env.STRIPE_API_TEST_KEY)
-const randomstring = require('randomstring')
+const randomstring = require('randomstring');
+const { route } = require('./onlinecauses');
 
 //to register an organisation
 router.post("/register", (req, res) => {
@@ -382,6 +383,50 @@ router.get("/initiative-count", async (req, res)=>{
     }
 })
 
+router.get("/recent-contributions", async (req, res)=>{
+    const sessOrg = req.session.org;
+    if (sessOrg){
+
+        const contributions = []
+        const initiatives =  await Initiative.find({})
+        .where('organisation').equals(req.session.org.id)
+        .catch((err)=>{
+            res.send(err)
+        })
+
+        await initiatives.forEach(async (initiative)=>{
+            const name = initiative.title
+            await initiative.donationHistory.forEach((dh)=>{
+                const obj = {
+                    title: name,
+                    history: dh
+                }
+                contributions.push(obj)
+            })
+        })
+
+        const dateSort = (a, b) =>{
+            if(a.history.date < b.history.date){
+                return 1;
+            }
+
+            if(a.history.date > b.history.date){
+                return -1;
+            }
+
+            return 0;
+        }
+
+        const sorted = contributions.sort(dateSort)
+        res.send({"contributions": sorted})
+    }
+    
+    else{
+        console.log("No user was found.")
+        res.status(401).send('Unauthorized')
+    }
+})
+
 router.get("/contribution-count", async (req, res)=>{
     const sessOrg = req.session.org;
     if (sessOrg){
@@ -408,6 +453,56 @@ router.get("/contribution-count", async (req, res)=>{
     }
 })
 
+router.get("/subs-category", async(req, res)=>{
+    const sessOrg = req.session.org;
+    if(sessOrg){
+        let allTags = []
+        const subs = await Subscription.find({})
+        .where('organisation').equals(req.session.org.id)
+        .where('active').equals(true)
+        .populate(
+            {
+                path: 'donor',
+                select: 'name interests'
+            }
+        )
+
+        if (subs.length === 0){
+            res.send({
+                categoryKeys: "",
+                categoryValues: ""
+            }) 
+        }
+
+        for (let i=0; subs.length; i++){
+            for(let j=0; j<subs[i].donor.interests; j++){
+                allTags.push(subs[i].donor.interests[j])
+            }
+        }
+
+        const count ={}
+        for (const elem of allTags){
+            if(count[elem]){
+                count[elem] += 1;
+            }
+            else{
+                count[elem] = 1
+            }
+        }
+        console.log(Object.keys(count))
+        console.log(Object.values(count))
+
+        res.send({
+            categoryKeys: Object.keys(count),
+            categoryValues: Object.values(count)
+        }) 
+    }
+
+    else{
+        console.log("No user was found. This is funny because it works on post man")
+        res.status(401).send('Unauthorized')
+    }
+})
 
 
 

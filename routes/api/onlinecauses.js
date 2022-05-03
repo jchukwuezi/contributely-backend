@@ -70,7 +70,8 @@ router.post("/collection/add/gg-country", async (req, res)=> {
     const sessDonor = req.session.donor;
     if (sessDonor){
         const {title, url, impact, themes, goal} = req.body;
-        const goalNum = parseFloat(goal)
+        const goalNum = parseFloat(goal.replace(/,/g, ''))
+        console.log(goalNum)
         const newCause = new OnlineCause({
             title: title,
             url: url,
@@ -99,7 +100,9 @@ router.post("/collection/add/gfm", async (req, res)=>{
     const {title, url, categories, goal} = req.body;
     if (sessDonor){
         const goalString = goal.replace('€', '')
-        const goalNum = parseFloat(goalString)
+        console.log(goalString)
+        const goalNum = parseFloat(goalString.replace(/,/g, ''))
+        console.log(goalNum)
         Donor.findById(req.session.donor.id).then(async (donor)=>{
             if(!donor){
                 console.log("No user was found.")
@@ -134,6 +137,7 @@ router.post("/collection/add/cf", async(req, res)=>{
     const sessDonor = req.session.donor;
     if (sessDonor){
         const {target, url, title, category} = req.body
+        console.log(target)
         let targetNum = 0;
         //converting target string
         if (target.includes("stretch")){
@@ -143,7 +147,7 @@ router.post("/collection/add/cf", async(req, res)=>{
            targetNum = parseFloat(targetString)
         }
         const targetString = target.replace('£', '')
-        targetNum = parseFloat(targetString)
+        targetNum = parseFloat(targetString.replace(/,/g, ''))
         Donor.findById(req.session.donor.id).then(async (donor)=>{
             if(!donor){
                 console.log("No user was found.")
