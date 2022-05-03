@@ -72,6 +72,9 @@ const DonorSchema = new mongoose.Schema({
             groupName:{
                 type: String
             },
+            initiativeName:{
+                type: String
+            },
             initiativeTags:[
 
             ]

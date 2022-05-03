@@ -19,7 +19,7 @@ router.get("/org/get", async (req, res)=>{
     res.send(subscriptions)
 })
 
-router.get("/donor/all", async(req, res)=>{
+router.get("/donor/all/open", async(req, res)=>{
     const sessDonor = req.session.donor;
     if(sessDonor){
         const activeSubs = await Subscription.find({})
@@ -41,7 +41,70 @@ router.get("/donor/all", async(req, res)=>{
         const subCount = activeSubs.length
         //res.send(subs)
         res.json({
+            "subs": activeSubs,
+            "count": subCount
+        })
+    }
+    else{
+        console.log("No user was found. This is funny because it works on post man")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/donor/all/", async(req, res)=>{
+    const sessDonor = req.session.donor;
+    if(sessDonor){
+        const activeSubs = await Subscription.find({})
+        .where('donor').equals(req.session.donor.id)
+
+        const subs = await Subscription.find({})
+        .where('donor').equals(req.session.donor.id)
+        .populate(
+            {
+                path: 'organisation',
+                select: 'name tags description'
+            }
+        )
+        .catch((err)=>{
+            res.send(err)
+        })
+        console.log(subs)
+        const subCount = activeSubs.length
+        //res.send(subs)
+        res.json({
             "subs": subs,
+            "count": subCount
+        })
+    }
+    else{
+        console.log("No user was found. This is funny because it works on post man")
+        res.status(401).send('Unauthorized')
+    }
+})
+
+router.get("/donor/all/closed", async(req, res)=>{
+    const sessDonor = req.session.donor;
+    if(sessDonor){
+        const closedSubs = await Subscription.find({})
+        .where('donor').equals(req.session.donor.id)
+        .where('active').equals(false)
+
+        const subs = await Subscription.find({})
+        .where('donor').equals(req.session.donor.id)
+        .populate(
+            {
+                path: 'organisation',
+                select: 'name tags description'
+            }
+        )
+        .catch((err)=>{
+            res.send(err)
+        })
+        console.log(subs)
+        const subCount = closedSubs.length
+        //res.send(subs)
+        res.json({
+            "subs": closedSubs,
             "count": subCount
         })
     }
